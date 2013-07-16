@@ -4,17 +4,17 @@ import collections as CL
 import operator as OP
 import copy as CP
 
-def _max(data, func=None):
+def _max(data, func):
     return reduce(lambda r, x : (func(r, x) < 0) and x or r, data[1:], data[0])
 
-def _min(data, func=None):
+def _min(data, func):
     return reduce(lambda r, x : (func(r, x) > 0) and x or r, data[1:], data[0])
 
 def _shuffle(data): random.shuffle(data)
 
 def _flatten (data, deep=False):
     sub = lambda x:  (isinstance(x, list) and (deep and _flatten(x, True) or x) or [x])
-    return reduce(lambda total, x: total + sub, data, [])
+    return reduce(lambda total, x: total + sub(x), data, [])
  
 def _group_by (data, func):
     result = {}
