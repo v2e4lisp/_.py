@@ -72,11 +72,10 @@ class TestUnderscoreList(unittest.TestCase):
         self.assertTrue(self.sample.contains(2))
         self.assertFalse(self.sample.contains(121))
 
-    def test_invoke(self):
-        r = []
-        func = lambda x: r.append(x)
-        self.assertTrue(isinstance(self.sample.invoke(func), _))
-        self.assertEqual(r, list(range(0,10)))
+    # def test_invoke(self):
+    #     r = ["s", "b", "c"]
+    #     self.assertTrue(isinstance(self.sample.invoke("upper"), _))
+    #     self.assertEqual(r, list(range(0,10)))
 
     def test_pluck(self):
         self.assertEqual(self.sample2.pluck("b").value(), [2,2])
@@ -140,24 +139,24 @@ class TestUnderscoreList(unittest.TestCase):
         deep = t.copy(True)
         self.assertEqual(t.value(), shallow.value())
         self.assertEqual(t.value(), deep.value())
-        self.assertFalse(t.value() is shallow.value())
-        self.assertFalse(t.value() is deep.value())
-        self.assertTrue(t.value()["c"] is shallow.value()["c"])
-        self.assertFalse(t.value()["c"] is deep.value()["c"])
+        self.assertIsNot(t.value(), shallow.value())
+        self.assertIsNot(t.value(), deep.value())
+        self.assertIs(t.value()["c"], shallow.value()["c"])
+        self.assertIsNot(t.value()["c"], deep.value()["c"])
 
     def test_deep_copy(self):
         t = _({"a": 1, "b": 2, "c": [1]})
         deep = t.deep_copy()
         self.assertEqual(t.value(), deep.value())
-        self.assertFalse(t.value() is deep.value())
-        self.assertFalse(t.value()["c"] is deep.value()["c"])
+        self.assertIsNot(t.value(), deep.value())
+        self.assertIsNot(t.value()["c"], deep.value()["c"])
 
     def test_clone(self):
         t = _({"a": 1, "b": 2, "c": [1]})
         shallow = t.copy()
         self.assertEqual(t.value(), shallow.value())
-        self.assertFalse(t.value() is shallow.value())
-        self.assertTrue(t.value()["c"] is shallow.value()["c"])
+        self.assertIsNot(t.value(), shallow.value())
+        self.assertIs(t.value()["c"], shallow.value()["c"])
 
     def test_first(self):
         self.assertEqual(self.sample.first(), self.sample.value()[0])

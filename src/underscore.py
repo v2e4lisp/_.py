@@ -110,11 +110,9 @@ class _(object):
 
     def contains (self, item): return item in self._
 
-    def invoke (self, func, *args, **kwargs):
-        self.each(lambda x: func(x, *args, **kwargs))
+    def invoke (self, method, *args, **kwargs):
+        self.each(lambda x: getattr(x, method)(*args, **kwargs))
         return self
-
-    def pluck (self, key): return self.map(lambda x: x[key])
 
     def max (self, func=None): return _max(self._, func) if func else max(self._)
 
@@ -128,17 +126,6 @@ class _(object):
 
     def shuffle (self): return _shuffle(self._) or self
 
-    # --dict
-    def keys (self): return _(self._.keys())
-
-    def values (self): return _(self._.values())
-
-    def items (self): return _(self._.items())
-    pairs = items
-
-    def has_key (self, key): return self._.has_key(key)
-    has = has_key
-    # --
 
     def size (self): return len(self._)
 
@@ -147,22 +134,6 @@ class _(object):
         return list(self._)
 
     def list(self): return _(self.to_list())
-
-    def pick (self, *keys):
-        result = {}
-        that = self.deep_copy()
-        for k in keys:
-            result[k] = that._[k]
-        return _(result)
-
-    def omit (self, *keys):
-        that = self.deep_copy()
-        for k in keys:
-            if k in that._: that.pop(k)
-        return that
-
-    def invert (self):
-        return self.items().map(lambda t: (t[1], t[0])).dict()
 
     def copy (self, deep=False): return _(CP.deepcopy(self._) if deep else CP.copy(self._))
 
@@ -225,6 +196,7 @@ class _(object):
         self._.insert (i, item)
         return self
 
+    # shared with dict
     def pop (self, i=None): return self._.pop(i) if i else self._.pop()
 
     def count (self,item): return self._.count(item)
@@ -236,3 +208,46 @@ class _(object):
     def reverse (self):
         self._.reverse()
         return self
+
+# -------------------------------------- dict --------------------------------------
+
+    def keys (self): return _(self._.keys())
+
+    def values (self): return _(self._.values())
+
+    def items (self): return _(self._.items())
+
+    def has_key (self, key): return self._.has_key(key)
+    has = has_key
+
+    def pick (self, *keys):
+        result = {}
+        that = self.deep_copy()
+        for k in keys:
+            result[k] = that._[k]
+        return _(result)
+
+    def omit (self, *keys):
+        that = self.deep_copy()
+        for k in keys:
+            if k in that._: that.pop(k)
+        return that
+
+    def invert (self):
+        return self.items().map(lambda t: (t[1], t[0])).dict()
+
+    def pluck (self, key): return self.map(lambda x: x[key])
+
+    def form_keys (self, value=None): return _(fomrkeys(self._, value))
+    
+    def get (self, key, default=None): return self._.get(key)
+
+    def iter_items (self): return self._.iteritems()
+
+    def iter_keys (self): return self._.iterkeys()
+
+    def iter_values (self): return self._.itervalues()
+
+    def pop_item (self): return self._.popitem()
+
+# ------------------------------------ end of dict ------------------------------------
