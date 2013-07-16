@@ -3,6 +3,7 @@ import random
 import copy
 import sys
 sys.path.append("/Users/wenjunyan/_py/src")
+sys.path.append("/Users/wenjun.yan/tmp/_.py/src")
 from underscore import _max, _min, _shuffle, _flatten, _group_by, _count_by, _union, _dict, _sorted_index, _uniq, _intersection, _difference
 
 class TestUnderscoreFunctions(unittest.TestCase):

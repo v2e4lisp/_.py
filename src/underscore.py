@@ -149,16 +149,20 @@ class _(object):
     def list(self): return _(self.to_list())
 
     def pick (self, *keys):
-        that = self.deepcopy()
         result = {}
+        that = self.deep_copy()
         for k in keys:
             result[k] = that._[k]
         return _(result)
 
     def omit (self, *keys):
-        return self.pick(*self.keys().difference(list(keys))._)
+        that = self.deep_copy()
+        for k in keys:
+            if k in that._: that.pop(k)
+        return that
 
-    def invert (self): pass
+    def invert (self):
+        return self.items().map(lambda t: (t[1], t[0])).dict()
 
     def copy (self, deep=False): return _(CP.deepcopy(self._) if deep else CP.copy(self._))
 
@@ -172,12 +176,12 @@ class _(object):
 
     def last (self): return self._[-1]
 
-    def but_last (self, n): return _(self._[0:-n])
+    def but_last (self, n=1): return _(self._[0:-n])
     initial = but_last
 
-    def rest (self, n): return _(self._[n:])
+    def rest (self, n=1): return _(self._[n:])
 
-    def compact (self, n): return self.filter()
+    def compact (self): return self.filter()
 
     def flatten (self, deep=False): return _(_flatten(self._, deep))
 
@@ -185,15 +189,17 @@ class _(object):
 
     def union (self, *lists): return _(_union(self._, *lists))
 
-    def intersection (self, *lists): return _(_intersection(*lists))
+    def intersection (self, *lists): return _(_intersection(self._, *lists))
 
-    def uniq (self): return _uniq(self._)
+    def uniq (self): return _(_uniq(self._))
 
     def difference (self, *lists): return _(_difference(self._, *lists))
 
     def zip (self, *lists): return _(zip(self._, *lists))
 
-    def dict (self, values): return _(_dict(self._, values))
+    def dict (self): return _(dict(self._))
+
+    def dict_values (self, values): return _(_dict(self._, values))
 
     def dict_keys (self, keys): return _(_dict(keys, self._))
 
@@ -207,16 +213,26 @@ class _(object):
 
 # -------------------------- python list method --------------------------
 
-    def append (self, item): return self._.append(item) and self
+    def append (self, item):
+        self._.append(item)
+        return self
 
-    def extend (self, new_list): return self._.extend(new_list) and self
+    def extend (self, new_list):
+        self._.extend(new_list)
+        return self
 
-    def insert (self, i, item): return self._.insert (i, item) and self
+    def insert (self, i, item):
+        self._.insert (i, item)
+        return self
 
     def pop (self, i=None): return self._.pop(i) if i else self._.pop()
 
     def count (self,item): return self._.count(item)
 
-    def sort (self): return self._.sort() and self
+    def sort (self):
+        self._.sort()
+        return self
 
-    def reverse (self): return self._.reverse() or self
+    def reverse (self):
+        self._.reverse()
+        return self
