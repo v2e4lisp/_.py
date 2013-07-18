@@ -126,19 +126,6 @@ class TestUnderscoreList(unittest.TestCase):
     def test_list(self):
         self.assertEqual(self.sample.list()._, list(range(0,10)))
 
-    def test_pick(self):
-        t = {"a": 1, "b": 2}
-        self.assertEqual(_(t).pick("b")._, {"b": 2})
-
-    def test_omit(self):
-        t = {"a": 1, "b": 2}
-        self.assertEqual(_(t).omit("a", "c", "d")._, {"b": 2})
-
-    def test_invert(self):
-        t = _({"a": 1, "b": 2, "c": 3})
-        self.assertEqual(t.invert().value(),
-                         {1: "a", 2: "b", 3: "c"})
-
     def test_copy(self):
         t = _({"a": 1, "b": 2, "c": [1]})
         shallow = t.copy()
