@@ -6,7 +6,23 @@ import math
 
 # underscore class
 
+
+class _call(object):
+
+    ''' proxy class recieve an function, and an _ object
+    return an _ object
+    '''
+
+    def __init__(self, fn, obj):
+        self.fn = fn
+        self.obj = obj
+
+    def __call__(self, *args, **kwargs):
+        r = self.fn(*args, **kwargs)
+        return _(r) if r else self.obj
+
 class _(object):
+
     def __init__(self, data):
         if not isinstance(data, _):
             self._ = data
@@ -21,6 +37,9 @@ class _(object):
     def __setitem__ (self, key, value):
         self._[key] = value
         return self
+
+    def __getattr__(self, name):
+        return _call(getattr(self._, name), self)
 
     def value(self): return self._
 
@@ -141,39 +160,22 @@ class _(object):
     def is_a (self, t): return isinstance(self._, t) and self
 
 # -------------------------- python list method --------------------------
+# following method are send it to the actual list
+    # append
+    # extend
+    # insert
+    # pop
+    # sort
+    # reverse
 
-    def append (self, item):
-        self._.append(item)
-        return self
-
-    def extend (self, new_list):
-        self._.extend(new_list)
-        return self
-
-    def insert (self, i, item):
-        self._.insert (i, item)
-        return self
-
-    # shared with dict
-    def pop (self, i=None): return _(self._.pop(i)) if i else _(self._.pop())
-
-    def count (self,item): return _(self._.count(item))
-
-    def sort (self):
-        self._.sort()
-        return self
-
-    def reverse (self):
-        self._.reverse()
-        return self
 
 # -------------------------------------- dict --------------------------------------
 
-    def keys (self): return _(self._.keys())
+    # def keys (self): return _(self._.keys())
 
-    def values (self): return _(self._.values())
+    # def values (self): return _(self._.values())
 
-    def items (self): return _(self._.items())
+    # def items (self): return _(self._.items())
 
     def has_key (self, key): return self._.has_key(key) and self
     has = has_key
@@ -197,24 +199,24 @@ class _(object):
 
     def form_keys (self, value=None): return _(fomrkeys(self._, value))
 
-    def iter_items (self): return _(self._.iteritems())
+    # def iter_items (self): return _(self._.iteritems())
 
-    def iter_keys (self): return _(self._.iterkeys())
+    # def iter_keys (self): return _(self._.iterkeys())
 
-    def iter_values (self): return _(self._.itervalues())
+    # def iter_values (self): return _(self._.itervalues())
 
-    def pop_item (self): return _(self._.popitem())
+    # def pop_item (self): return _(self._.popitem())
 
-    def get (self, key): return _(self[key])
+    # def get (self, key): return _(self[key])
 
 # ------------------------------------ number ------------------------------------
 
     def times (self, l):
         for i in range(0, self._): l()
         return self
-        
+
     def ceil (self): return _(math.ceil(self._))
-    
+
     def floor (self): return _(math.floor(self._))
 
     def chr (self): return _(chr(self._))
@@ -239,7 +241,7 @@ class _(object):
 
 # ------------------------------------ str ------------------------------------
 # TODO
-    
+
 # helper functions
 
 def _max(data, func):
@@ -288,5 +290,3 @@ def _sorted_index (data, item):
         m = (s + e)/2
         return si(s, m-1) if data[m] > item else si(m+1, e)
     return si(0, len(data) - 1)
-            
-    

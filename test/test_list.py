@@ -249,17 +249,17 @@ class TestUnderscoreList(unittest.TestCase):
         t.pop()
         self.assertEqual(self.sample.value(), t)
 
-    def count(self):
+    def test_count(self):
         t = list(range(10) + range(20))
-        self.assertEqual(_(t).count(8), t.count(8))
+        self.assertEqual(_(t).count(8)._, t.count(8))
 
-    def sort(self):
+    def test_sort(self):
         t1 = [2,3,51,5,6,2,3,1,6,7]
         t2 = t1[:]
         t1.sort()
         self.assertEqual(_(t2).sort()._, t1)
 
-    def reverse(self):
+    def test_reverse(self):
         t1 = [2,3,51,5,6,2,3,1,6,7]
         t2 = t1[:]
         t1.reverse()
