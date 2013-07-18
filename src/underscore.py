@@ -123,9 +123,7 @@ class _(object):
 
     def size (self): return len(self._)
 
-    def to_list (self):
-        if isinstance(self._, dict) : return self._.items()
-        return list(self._)
+    def to_list (self): return self._.items() if self.is_a(dict) else list(self._)
 
     def list(self): return _(self.to_list())
 
@@ -175,10 +173,12 @@ class _(object):
     def sorted_index (self, item): return _sorted_index(self._, item)
 
     def pairs (self):
-        return self.items() if isinstance(self._, dict) else self.chunks(2)
+        return self.items() if self.is_a(dict) else self.chunks(2)
 
     def chunks (self, n):
         return _([self._[i:i+n] for i in range(0, self.size(), n)])
+
+    def is_a (self, t): return isinstance(self._, t)
 
 # -------------------------- python list method --------------------------
 
