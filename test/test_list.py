@@ -12,6 +12,15 @@ class TestUnderscoreList(unittest.TestCase):
         self.sample = _(range(10))
         self.sample2 = _([{"a": 1, "b": 2, "c": 3}, {"b":2, "c":3, "d":4}])
 
+    def test_getitem(self):
+        self.assertEqual(self.sample[0], 0)
+
+    def test_setitem(self):
+        s = self.sample.list()
+        self.assertEqual(s[0], 0)
+        s[0] = 1
+        self.assertEqual(s[0], 1)
+
     def test_new(self):
         fake = copy.deepcopy(self.sample)
         self.assertEqual(fake.value(), self.sample.value())
@@ -31,17 +40,17 @@ class TestUnderscoreList(unittest.TestCase):
                          list(range(1,11)))
 
     def test_reduce(self):
-        self.assertEqual(self.sample.reduce(lambda t, x: t+x), 45)
+        self.assertEqual(self.sample.reduce(lambda t, x: t+x)._, 45)
 
     def test_reduce_right(self):
-        self.assertEqual(self.sample.reduce_right(lambda t, x: t+x), 45)
+        self.assertEqual(self.sample.reduce_right(lambda t, x: t+x)._, 45)
 
     def test_filter(self):
         self.assertEqual(self.sample.filter(lambda x: x%2==0).value(),
                          list(range(0,10,2)))
 
     def test_find(self):
-        self.assertEqual(self.sample.find(lambda x: x == 5), 5)
+        self.assertEqual(self.sample.find(lambda x: x == 5)._, 5)
         self.assertTrue(self.sample.find(lambda x: x == 11) is None)
 
     def test_where(self):
@@ -81,12 +90,12 @@ class TestUnderscoreList(unittest.TestCase):
         self.assertEqual(self.sample2.pluck("b").value(), [2,2])
 
     def test_max(self):
-        self.assertEqual(self.sample.max(), 9)
-        self.assertEqual(self.sample.max(lambda x, y: y - x), 0)
+        self.assertEqual(self.sample.max()._, 9)
+        self.assertEqual(self.sample.max(lambda x, y: y - x)._, 0)
 
     def test_min(self):
-        self.assertEqual(self.sample.min(), 0)
-        self.assertEqual(self.sample.max(lambda x, y: x - y), 9)
+        self.assertEqual(self.sample.min()._, 0)
+        self.assertEqual(self.sample.min(lambda x, y: y - x)._, 9)
 
     def test_reverse(self):
         self.assertEqual(self.sample.reverse().value(), list(range(9, -1, -1)))
@@ -112,13 +121,10 @@ class TestUnderscoreList(unittest.TestCase):
         self.assertNotEqual(shuffled.value(), self.sample.value())
 
     def test_size(self):
-        self.assertEqual(self.sample.size(), 10)
-
-    def test_to_list(self):
-        self.assertEqual(self.sample.to_list(), list(range(0,10)))
+        self.assertEqual(self.sample.size()._, 10)
 
     def test_list(self):
-        self.assertEqual(self.sample.to_list(), list(range(0,10)))
+        self.assertEqual(self.sample.list()._, list(range(0,10)))
 
     def test_pick(self):
         t = {"a": 1, "b": 2}
@@ -159,10 +165,10 @@ class TestUnderscoreList(unittest.TestCase):
         self.assertIs(t.value()["c"], shallow.value()["c"])
 
     def test_first(self):
-        self.assertEqual(self.sample.first(), self.sample.value()[0])
+        self.assertEqual(self.sample.first()._, self.sample[0])
 
     def test_last(self):
-        self.assertEqual(self.sample.last(), self.sample.value()[-1])
+        self.assertEqual(self.sample.last()._, self.sample[-1])
 
     def test_but_last(self):
         self.assertEqual(self.sample.but_last().value(),
@@ -232,7 +238,7 @@ class TestUnderscoreList(unittest.TestCase):
         self.assertEqual(_(t).last_index(9), 23)
 
     def test_sorted_index(self):
-        self.assertEqual(self.sample.sorted_index(6) , 7)
+        self.assertEqual(self.sample.sorted_index(6)._ , 7)
 
     def test_append(self):
         t = list(range(10))
@@ -286,6 +292,12 @@ class TestUnderscoreList(unittest.TestCase):
         else:
             self.assertFalse(self.sample.is_a(list))
         self.assertTrue(_([1,2,3]).is_a(list))
+
+    def test_times(self):
+        a = []
+        _(10).times(lambda : a.append(1))
+        self.assertEqual(a, [1] * 10)
+
 
 if __name__ == '__main__':
     unittest.main()
