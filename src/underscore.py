@@ -97,7 +97,7 @@ class _(object):
     def last (self): return _(self._[-1])
 
     def but_last (self, n=1): return _(self._[0:-n])
-    initial = but_last
+    take = initial = but_last
 
     def rest (self, n=1): return _(self._[n:])
 
@@ -179,19 +179,13 @@ class _(object):
     has = has_key
 
     def pick (self, *keys):
-        result = {}
-        for k in keys:
-            result[k] = self[k]
-        return _(result)
+        return _({k: self[k] for k in keys})
 
     def omit (self, *keys):
-        that = self.deep_copy()
-        for k in keys:
-            if k in that._: that.pop(k)
-        return that
+        return _({k: self[k] for k in self._ if k not in keys})
 
     def invert (self):
-        return self.items().map(lambda t: (t[1], t[0])).dict()
+        return _({self[k]: k for k in self._})
 
     def defaults (self, d, **kwargs):
         for x in (d, kwargs):
@@ -234,7 +228,6 @@ class _(object):
     def odd (self): return not self.even() and self
 
     def succ (self): return _(self._ + 1)
-    next = succ
 
     def pred (self): return _(self._ - 1)
 
