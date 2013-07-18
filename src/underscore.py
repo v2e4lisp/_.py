@@ -3,6 +3,7 @@ import random
 import collections as CL
 import operator as OP
 import copy as CP
+from types import MethodType
 
 def _max(data, func):
     return reduce(lambda r, x : (func(r, x) < 0) and x or r, data[1:], data[0])
@@ -15,7 +16,7 @@ def _shuffle(data): random.shuffle(data)
 def _flatten (data, deep=False):
     sub = lambda x:  (isinstance(x, list) and (deep and _flatten(x, True) or x) or [x])
     return reduce(lambda total, x: total + sub(x), data, [])
- 
+
 def _group_by (data, func):
     result = {}
     for i in data:
@@ -65,7 +66,7 @@ class _(object):
 
     def value(self): return self._
 
-#----------------------- underscore.js collections -----------------------
+#----------------------- collections -----------------------
 
     def each (self, func):
         for i in self._: func(i)
@@ -116,8 +117,9 @@ class _(object):
 
     def count_by (self, func=bool): return _(_count_by(self._, func))
 
-    def shuffle (self): return _shuffle(self._) or self
-
+    def shuffle (self):
+        _shuffle(self._)
+        return self
 
     def size (self): return len(self._)
 
@@ -132,8 +134,6 @@ class _(object):
     def deep_copy (self): return self.copy(True)
 
     def clone (self): return self.copy(False)
-
-# -------------------------- underscore.js array --------------------------
 
     def first (self): return self._[0]
 
@@ -173,6 +173,12 @@ class _(object):
     last_index_of = last_index
 
     def sorted_index (self, item): return _sorted_index(self._, item)
+
+    def pairs (self):
+        return self.items() if isinstance(self._, dict) else self.chunks(2)
+
+    def chunks (self, n):
+        return _([self._[i:i+n] for i in range(0, self.size(), n)])
 
 # -------------------------- python list method --------------------------
 
@@ -230,7 +236,7 @@ class _(object):
     def pluck (self, key): return self.map(lambda x: x[key])
 
     def form_keys (self, value=None): return _(fomrkeys(self._, value))
-    
+
     def get (self, key, default=None): return self._.get(key)
 
     def iter_items (self): return self._.iteritems()
@@ -242,3 +248,4 @@ class _(object):
     def pop_item (self): return self._.popitem()
 
 # ------------------------------------ end of dict ------------------------------------
+
