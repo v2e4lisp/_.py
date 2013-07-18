@@ -272,5 +272,21 @@ class TestUnderscoreList(unittest.TestCase):
         t1.reverse()
         self.assertEqual(_(t2).reverse()._, t1)
 
+    def test_chunks(self):
+        self.assertEqual(self.sample.chunks(3)._,
+                         [[0,1,2],[3,4,5],[6,7,8],[9]])
+
+    def test_pairs(self):
+        self.assertEqual(self.sample.pairs()._,
+                         [[0,1],[2,3],[4,5],[6,7],[8,9]])
+
+    def test_is_a(self):
+        if sys.version_info.major < 3:
+            self.assertTrue(self.sample.is_a(list))
+        else:
+            self.assertFalse(self.sample.is_a(list))
+        self.assertTrue(_([1,2,3]).is_a(list))
+
 if __name__ == '__main__':
     unittest.main()
+
