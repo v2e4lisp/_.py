@@ -68,6 +68,10 @@ class _(object):
         ''' delegate undefined methods to self.value() '''
         return _call(getattr(self._, name), self)
 
+    def __contains__(self, item):
+        ''' in operator '''
+        return item in self._
+
     def value(self):
         return self._
 
@@ -94,12 +98,10 @@ class _(object):
         return next((_(x) for x in self._ if func(x)), False)
 
     def where(self, cond):
-        return self.filter(lambda x: all(map(lambda key: key in x and
-                                             x[key] == cond[key], cond)))
+        return self.filter(lambda x: _(x).contains(cond))
 
     def find_where(self, cond):
-        return self.find_item(lambda x: all(map(lambda key: key in x and
-                                                x[key] == cond[key], cond)))
+        return self.find_item(lambda x: _(x).contains(cond))
 
     def reject(self, func=bool):
         return self.filter(lambda x: not func(x))
@@ -115,7 +117,9 @@ class _(object):
     any = some
 
     def contains(self, item):
-        return item in self._
+        if isinstance(item, dict):
+            return _(item).all(lambda key: self._.get(key) == item[key])
+        return item in self
 
     def invoke(self, method, *args, **kwargs):
         self.each(lambda x: getattr(x, method)(*args, **kwargs))
