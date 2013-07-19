@@ -2,7 +2,9 @@ import random
 import collections
 import copy
 import math
-from functools import reduce
+from sys import version_info
+if version_info.major > 2:
+    from functools import reduce
 
 
 # delegator...
