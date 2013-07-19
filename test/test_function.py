@@ -2,14 +2,15 @@ import unittest
 import random
 import copy
 import sys
+from test_helper import *
 sys.path.append("/Users/wenjunyan/_py/src")
 sys.path.append("/Users/wenjun.yan/tmp/_.py/src")
 from underscore import _max, _min, _shuffle, _flatten, _group_by, _count_by, _union, _dict, _sorted_index, _uniq, _intersection, _difference
 
-class TestUnderscoreFunctions(unittest.TestCase):
+class TestUnderscoreFunction(unittest.TestCase):
 
     def setUp(self):
-        self.seq =range(10)
+        self.seq = list(range(10))
 
     def test_max(self):
         mx = _max(self.seq, lambda x,y : x-y)
