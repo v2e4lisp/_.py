@@ -3,6 +3,7 @@ import collections as CL
 import operator as OP
 import copy as CP
 import math
+import types
 from functools import reduce
 
 # delegator...
@@ -30,7 +31,7 @@ class _(object):
 
     def __new__(cls, *args, **kwargs):
         if len(args) > 0 and isinstance(args[0], _):
-            return data
+            return args[0]
         return object.__new__(cls)
 
     def __getstate__(self):
@@ -71,50 +72,54 @@ class _(object):
 
     def filter (self, func=bool): return _(filter(func, self._))
 
-    def find (self, func):
-        for i in self._:
-            if func(i): return _(i)
+    def find_item (self, func):
+        return next((_(x) for x in self._ if func(x)), False)
 
     def where (self, cond):
         return self.filter(lambda x: all(map(lambda key: key in x and x[key] == cond[key], cond)))
 
     def find_where (self, cond):
-        return self.find(lambda x: all(map(lambda key: key in x and x[key] == cond[key], cond)))
+        return self.find_item(lambda x: all(map(lambda key: key in x and x[key] == cond[key], cond)))
 
     def reject (self, func=bool): return self.filter(lambda x: not func(x))
 
-    def all (self, func=bool): return all(map(func, self._)) and self
+    def all (self, func=bool): return all(map(func, self._))
     every = all
 
     def some (self, func=bool):
         for i in self._:
-            if func(i): return self
+            if func(i): return True
     any = some
 
-    def contains (self, item): return (item in self._) and self
+    def contains (self, item): return item in self._
 
     def invoke (self, method, *args, **kwargs):
         self.each(lambda x: getattr(x, method)(*args, **kwargs))
         return self
 
-    def max (self, func=None): return _(_max(self._, func) if func else max(self._))
+    def max (self, fn=lambda x: x): return _(max(*self._, key=fn))
 
-    def min (self, func=None): return _(_min(self._, func) if func else min(self._))
+    def min (self, fn=lambda x: x): return _(min(*self._, key=fn))
 
-    def sort_by (self, func): return _(sorted (self._, key=func))
+    def sorted (self, func=None): return _(sorted (self._, key=func))
+
+    def sort_by (self, func=None):
+        self._.sort(key=func)
+        return self
 
     def group_by (self, func): return _(_group_by(self._, func))
 
     def count_by (self, func=bool): return _(_count_by(self._, func))
+
+    def count (self, item):
+        if type(self._) is set: return self.filter(lambda: x == item).size()
+        return _(self._.count(item))
 
     def shuffle (self):
         _shuffle(self._)
         return self
 
     def size (self): return _(len(self._))
-
-    def list (self):
-        return _(list(self._.items())) if self.is_a(dict) else _(list(self._))
 
     def copy (self, deep=False):
         return _(CP.deepcopy(self._) if deep else CP.copy(self._))
@@ -156,8 +161,6 @@ class _(object):
         return _(_difference(self._, *lists))
 
     def zip (self, *lists): return _(zip(self._, *lists))
-
-    def dict (self): return _(dict(self._))
 
     def dict_values (self, values): return _(_dict(self._, values))
 
@@ -255,13 +258,16 @@ class _(object):
 # ------------------------------------ str ------------------------------------
 # TODO
 
+# ------------------------------------ convertion -----------------------------
+    def list (self):
+        return _(list(self._.items())) if self.is_a(dict) else _(list(self._))
+
+    def dict (self): return _(dict(self._))
+
+    def set (self):
+        return _(set(self._))
+
 # helper functions
-
-def _max(data, func):
-    return reduce(lambda r, x : (func(r, x) < 0) and x or r, data[1:], data[0])
-
-def _min(data, func):
-    return reduce(lambda r, x : (func(r, x) > 0) and x or r, data[1:], data[0])
 
 def _shuffle(data): random.shuffle(data)
 

@@ -5,20 +5,12 @@ import sys
 from test_helper import *
 sys.path.append("/Users/wenjunyan/_py/src")
 sys.path.append("/Users/wenjun.yan/tmp/_.py/src")
-from underscore import _max, _min, _shuffle, _flatten, _group_by, _count_by, _union, _dict, _sorted_index, _uniq, _intersection, _difference
+from underscore import _shuffle, _flatten, _group_by, _count_by, _union, _dict, _sorted_index, _uniq, _intersection, _difference
 
 class TestUnderscoreFunction(unittest.TestCase):
 
     def setUp(self):
         self.seq = list(range(10))
-
-    def test_max(self):
-        mx = _max(self.seq, lambda x,y : x-y)
-        self.assertEqual(max(self.seq), mx)
-
-    def test_min(self):
-        mn = _min(self.seq, lambda x,y: x-y)
-        self.assertEqual(min(self.seq), mn)
 
     def test_shuffle(self):
         shuffled = self.seq[:]

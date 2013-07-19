@@ -48,9 +48,9 @@ class TestUnderscoreList(unittest.TestCase):
         self.assertEqual(self.sample.filter(lambda x: x%2==0).list().value(),
                          list(range(0,10,2)))
 
-    def test_find(self):
-        self.assertEqual(self.sample.find(lambda x: x == 5)._, 5)
-        self.assertTrue(self.sample.find(lambda x: x == 11) is None)
+    def test_find_item(self):
+        self.assertEqual(self.sample.find_item(lambda x: x == 5)._, 5)
+        self.assertTrue(self.sample.find_item(lambda x: x == 11) is False)
 
     def test_where(self):
         self.assertEqual(self.sample2.where({"b": 2}).list().value(),
@@ -80,28 +80,28 @@ class TestUnderscoreList(unittest.TestCase):
         self.assertTrue(self.sample.contains(2))
         self.assertFalse(self.sample.contains(121))
 
-    # def test_invoke(self):
-    #     r = ["s", "b", "c"]
-    #     self.assertTrue(isinstance(self.sample.invoke("upper"), _))
-    #     self.assertEqual(r, list(range(0,10)))
+    def test_invoke(self):
+        r = _(["s", "b", "c"])
+        self.assertTrue(_(r).invoke("upper")._, ["S", "B", "C"])
 
     def test_pluck(self):
         self.assertEqual(self.sample2.pluck("b").list().value(), [2,2])
 
     def test_max(self):
         self.assertEqual(self.sample.max()._, 9)
-        self.assertEqual(self.sample.max(lambda x, y: y - x)._, 0)
+        self.assertEqual(self.sample.max(lambda x: -x)._, 0)
 
     def test_min(self):
         self.assertEqual(self.sample.min()._, 0)
-        self.assertEqual(self.sample.min(lambda x, y: y - x)._, 9)
+        self.assertEqual(self.sample.min(lambda x: -x)._, 9)
 
     def test_reverse(self):
         self.assertEqual(self.sample.reverse().value(), list(range(9, -1, -1)))
 
     def test_sort_by(self):
+        t = self.sample.deep_copy()
         self.assertEqual(self.sample.sort_by(lambda x: -x).value(),
-                         self.sample.reverse().value())
+                         t.reverse().value())
 
     def test_group_by(self):
         t = self.sample.group_by(lambda x: x%2).value()
@@ -109,9 +109,9 @@ class TestUnderscoreList(unittest.TestCase):
         self.assertEqual(t[1], list(range(1,10,2)))
 
     def test_count_by(self):
-        t = self.sample.count_by(lambda x: x%2).value()
-        self.assertEqual(t[0], len((range(0,10,2))))
-        self.assertEqual(t[1], len((range(1,10,2))))
+        t = _(set(range(10))).count_by(lambda x: x%2).value()
+        self.assertEqual(t[0], 5)
+        self.assertEqual(t[1], 5)
 
     def test_shuffle(self):
         shuffled = copy.deepcopy(self.sample)
@@ -283,4 +283,3 @@ class TestUnderscoreList(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
