@@ -138,13 +138,22 @@ class _(object):
 
     def without (self, *args): return self.reject(lambda x: x in args)
 
-    def union (self, *lists): return _(_union(self._, *lists))
+    def union (self, *lists):
+        if type(self._) is set:
+            return _(self._.union(*lists))
+        return _(_union(self._, *lists))
 
-    def intersection (self, *lists): return _(_intersection(self._, *lists))
+    def intersection (self, *lists):
+        if type(self._) is set:
+            return _(self._.union(*lists))
+        return _(_intersection(self._, *lists))
 
     def uniq (self): return _(_uniq(self._))
 
-    def difference (self, *lists): return _(_difference(self._, *lists))
+    def difference (self, *lists):
+        if type(self._) is set:
+            return _(self._.union(*lists))
+        return _(_difference(self._, *lists))
 
     def zip (self, *lists): return _(zip(self._, *lists))
 
@@ -172,6 +181,11 @@ class _(object):
     def is_a (self, t): return isinstance(self._, t) and self
 
     def pluck (self, key): return self.map(lambda x: x[key])
+
+    def join (self, sep):
+        if type(self._) is str:
+            return _(self._.join(sep))
+        return _(sep.join(self._))
 
 # -------------------------- python list method --------------------------
 # following method are send it to the actual list
