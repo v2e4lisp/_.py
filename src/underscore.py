@@ -244,14 +244,6 @@ class _(object):
             return _(self._.join(sep))
         return _(sep.join(self._))
 
-# -------------------------- python list method --------------------------
-# following method are send it to the actual list
-    # append
-    # extend
-    # insert
-    # pop
-    # sort
-    # reverse
 #------------------------------------- dict ------------------------------
 
     def pick(self, *keys):
@@ -267,17 +259,6 @@ class _(object):
         for i in kwargs:
             self._.setdefault(i, kwargs[i])
         return self
-
-    # def keys
-    # def values
-    # def items
-    # def has_key
-    # def iteritems
-    # def iterkeys
-    # def itervalues
-    # def popitem
-    # def pop
-    # def get
 
 # --------------------------------- number -------------------------------
 
@@ -323,9 +304,9 @@ class _(object):
 # ------------------------------------ str ------------------------------------
 # TODO
 
-# ------------------------------------ convertion -----------------------------
+# ------------------------------------ conversion -----------------------------
     def list(self):
-        return _(list(self._.items())) if self.is_a(dict) else _(list(self._))
+        return _(list(self._))
 
     def dict(self):
         return _(dict(self._))
@@ -333,10 +314,13 @@ class _(object):
     def set(self):
         return _(set(self._))
 
+    def str(self):
+        return _(str(self._))
 
 # --------------------
 # - helper functions -
 # --------------------
+
 
 def _shuffle(data):
     random.shuffle(data)
@@ -394,3 +378,22 @@ def _sorted_index(data, item):
         m = int((s + e)/2)
         return si(s, m-1) if data[m] > item else si(m+1, e)
     return si(0, len(data) - 1)
+
+
+def _levenshtein(s1, s2):
+    l1, l2 = len(s1), len(s2)
+    memo = [[None] * l2 for i in range(l1)]
+
+    def ld(e1, e2):
+        if e1 == -1:
+            return e2 + 1
+        if e2 == -1:
+            return e1 + 1
+        if memo[e1][e2] is None:
+            cost = 0 if s1[e1] == s2[e2] else 1
+            memo[e1][e2] = min(ld(e1-1, e2) + 1,
+                               ld(e1, e2-1) + 1,
+                               ld(e1-1, e2-1) + cost)
+        return memo[e1][e2]
+
+    return ld(l1-1, l2-1)
