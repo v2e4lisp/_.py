@@ -83,7 +83,7 @@ class _(object):
         get the value out of the _ object
         type: -> a
 
-        e.g
+        e.g.
         _([1,2,3]).value()
         => [1,2,3]
         which is the same as _([1,2,3])._
@@ -185,7 +185,7 @@ class _(object):
     def where(self, cond):
         """
         find all items whose (key, value) pairs matches `cond`
-        type dict -> _([dict])
+        type: dict -> _([dict])
 
         e.g.
         _([{"a": 1, "b":2}, {"a": 1, "b":1}, {"c":1, "d":2}]).find_where({"a":1})._
