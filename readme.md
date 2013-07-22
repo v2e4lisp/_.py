@@ -26,7 +26,6 @@ func default is bool.
 `any` is an alias of `some`
 
 **type**: function -> boolean
-      _ -> boolean
 
 ```python
 
@@ -78,8 +77,7 @@ _([1,2,3]).all(lambda x: x>0)
 looks through the self._ and collect the items that passed
 `func`(return true). the default `func` is `bool`.
 
-**type**: -> _
-     function -> _
+**type**: function -> _
 
 ```python
 
@@ -92,7 +90,6 @@ find the first item when `func(item)` reutrn `True`.
 it return as soon as it finds such an item.
 
 **type**: function -> _(a)
-      function -> None
 
 ```python
 
@@ -104,7 +101,6 @@ _([1,2,2,4]).find_item(lambda x: x == 2)._
 find the first item whoses (key, value) pair matches `cond`
 
 **type**: dict -> _(dict)
-      dict -> None
 
 ```python
 
@@ -139,7 +135,6 @@ get the max item using a key function `fn`
 `fn` default is `lambda x: x`
 
 **type**: function -> a
-       -> a
 
 ```python
 
@@ -152,7 +147,6 @@ get the min item using a key function `fn`
 `fn` default is `lambda x: x`
 
 **type**: function -> a
-       -> a
 
 ```python
 
@@ -163,8 +157,7 @@ _([1,2,3,4]).min(lambda x: -x)._
 ### reduce
 left-fold the self._ by `func` with initial value set to `init`
 
-**type**: function -> _
-      function * a -> _
+**type**: function * a -> _
 
 ```python
 
@@ -175,8 +168,7 @@ _([1,2,3]).reduce(lambda t, x: t-x)._
 ### reduce_right
 right-fold the self._ by `func` with initial value set to `init`
 
-**type**: function -> _(b)
-      function * a -> _(b)
+**type**: function * a -> _(b)
 
 ```python
 
@@ -189,7 +181,6 @@ collect items which dosen't pass the `func`(return `False`)
 `func` default is `bool`
 
 **type**: function -> _
-      -> _
 
 ```python
 
@@ -203,7 +194,6 @@ func default is bool.
 `any` is an alias of `some`
 
 **type**: function -> boolean
-      _ -> boolean
 
 ```python
 

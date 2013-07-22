@@ -123,8 +123,7 @@ class _(object):
     def reduce(self, func, init=None):
         """
         left-fold the self._ by `func` with initial value set to `init`
-        type: function -> _
-              function * a -> _
+        type: function * a -> _
 
         e.g.
         _([1,2,3]).reduce(lambda t, x: t-x)._
@@ -135,8 +134,7 @@ class _(object):
     def reduce_right(self, func, init=None):
         """
         right-fold the self._ by `func` with initial value set to `init`
-        type: function -> _(b)
-              function * a -> _(b)
+        type: function * a -> _(b)
 
         e.g.
         _([1,2,3]).reduce_right(lambda t, x: t-x)._
@@ -148,8 +146,7 @@ class _(object):
         """
         looks through the self._ and collect the items that passed
         `func`(return true). the default `func` is `bool`.
-        type: -> _
-             function -> _
+        type: function -> _
 
         e.g.
         _([1,2,3,4]).filter(lambda x: x % 2 == 0)._
@@ -162,7 +159,6 @@ class _(object):
         find the first item when `func(item)` reutrn `True`.
         it return as soon as it finds such an item.
         type: function -> _(a)
-              function -> None
 
         e.g.
         _([1,2,2,4]).find_item(lambda x: x == 2)._
@@ -174,7 +170,6 @@ class _(object):
         """
         find the first item whoses (key, value) pair matches `cond`
         type: dict -> _(dict)
-              dict -> None
 
         e.g.
         _([{"a": 1, "b":2}, {"c":1, "d":2}]).find_where({"a":1})._
@@ -198,7 +193,6 @@ class _(object):
         collect items which dosen't pass the `func`(return `False`)
         `func` default is `bool`
         type: function -> _
-              -> _
 
         e.g.
         _([1,2,3,4]).reject(lambda x: x%2 == 0)._
@@ -227,7 +221,6 @@ class _(object):
         func default is bool.
         `any` is an alias of `some`
         type: function -> boolean
-              _ -> boolean
 
         e.g.
         _([1,2,3]).some(lambda x: x>2)
@@ -270,7 +263,6 @@ class _(object):
         get the max item using a key function `fn`
         `fn` default is `lambda x: x`
         type: function -> a
-               -> a
 
         e.g.
         _([1,2,3,4]).max(lambda x: -x)._
@@ -283,7 +275,6 @@ class _(object):
         get the min item using a key function `fn`
         `fn` default is `lambda x: x`
         type: function -> a
-               -> a
 
         e.g.
         _([1,2,3,4]).min(lambda x: -x)._
