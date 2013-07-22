@@ -79,62 +79,216 @@ class _(object):
         return item in self._
 
     def value(self):
+        """
+        get the value out of the _ object
+        type: -> a
+
+        e.g
+        _([1,2,3]).value()
+        => [1,2,3]
+        which is the same as _([1,2,3])._
+        """
         return self._
 
 #----------------------- collections -----------------------
 
     def each(self, func):
+        """
+        apply the `func` to every item
+        type: function -> _
+
+        e.g.
+        def printit(it): print(it)
+        _([1,2,3]).each(printit)
+        => 1
+        => 2
+        => 3
+        """
+
         for i in self._:
             func(i)
         return self
 
     def map(self, func):
+        """
+        apply `func` to every item, and collect the result.
+        type: function -> _
+
+        e.g.
+        _([1,2,3]).map(lambda x: x+1)._
+        => [2,3,4]
+        """
         return _(map(func, self._))
 
     def reduce(self, func, init=None):
+        """
+        left-fold the self._ by `func` with initial value set to `init`
+        type: function -> _
+              function * a -> _
+
+        e.g.
+        _([1,2,3]).reduce(lambda t, x: t-x)._
+        => -4
+        """
         return _(reduce(func, self._, init) if init else reduce(func, self._))
 
     def reduce_right(self, func, init=None):
+        """
+        right-fold the self._ by `func` with initial value set to `init`
+        type: function -> _(b)
+              function * a -> _(b)
+
+        e.g.
+        _([1,2,3]).reduce_right(lambda t, x: t-x)._
+        => 0
+        """
         return self.reverse().reduce(func, init)
 
     def filter(self, func=bool):
+        """
+        looks through the self._ and collect the items that passed
+        `func`(return true). the default `func` is `bool`.
+        type: -> _
+             function -> _
+
+        e.g.
+        _([1,2,3,4]).filter(lambda x: x % 2 == 0)._
+        => [2,4]
+        """
         return _(filter(func, self._))
 
     def find_item(self, func):
+        """
+        find the first item when `func(item)` reutrn `True`.
+        it return as soon as it finds such an item.
+        type: function -> _(a)
+              function -> None
+
+        e.g.
+        _([1,2,2,4]).find_item(lambda x: x == 2)._
+        => 2
+        """
         return next((_(x) for x in self._ if func(x)), None)
 
-    def where(self, cond):
-        return self.filter(lambda x: _(x).contains(cond))
-
     def find_where(self, cond):
+        """
+        find the first item whoses (key, value) pair matches `cond`
+        type: dict -> _(dict)
+              dict -> None
+
+        e.g.
+        _([{"a": 1, "b":2}, {"c":1, "d":2}]).find_where({"a":1})._
+        => {"a": 1, "b": 2}
+        """
         return self.find_item(lambda x: _(x).contains(cond))
 
+    def where(self, cond):
+        """
+        find all items whose (key, value) pairs matches `cond`
+        type dict -> _([dict])
+
+        e.g.
+        _([{"a": 1, "b":2}, {"a": 1, "b":1}, {"c":1, "d":2}]).find_where({"a":1})._
+        => [{"a": 1, "b":2}, {"a": 1, "b":1}]
+        """
+        return self.filter(lambda x: _(x).contains(cond))
+
     def reject(self, func=bool):
+        """
+        collect items which dosen't pass the `func`(return `False`)
+        `func` default is `bool`
+        type: function -> _
+              -> _
+
+        e.g.
+        _([1,2,3,4]).reject(lambda x: x%2 == 0)._
+        => [1,3]
+        """
         return self.filter(lambda x: not func(x))
 
     def all(self, func=bool):
+        """
+        check if all items can pass the `func`(return `True`)
+        func default is bool.
+        `every` is an alias of `all`
+        type: function -> boolean
+              _ -> boolean
+
+        e.g.
+        _([1,2,3]).all(lambda x: x>0)
+        => True
+        """
         return all(map(func, self._))
     every = all
 
     def some(self, func=bool):
+        """
+        check if any item in self._ can pass the `func`(return `True`)
+        func default is bool.
+        `any` is an alias of `some`
+        type: function -> boolean
+              _ -> boolean
+
+        e.g.
+        _([1,2,3]).some(lambda x: x>2)
+        => True
+        """
         for i in self._:
             if func(i):
                 return True
     any = some
 
     def contains(self, item):
+        """
+        check if item is part of self._
+        type: a -> boolean
+
+        e.g
+        _([1,2,3]).contains(1)
+        => True
+        _({'a': 1,'b': 2, 'c': 3}).contains({'a':1, 'c':3})
+        => True
+        """
         if isinstance(item, dict):
             return _(item).all(lambda key: self._.get(key) == item[key])
         return item in self
 
     def invoke(self, method, *args, **kwargs):
+        """
+        invoke method with args on every item
+        type: method * args * kwargs -> _
+
+        e.g.
+        _([1,2,3], [3,4,5]).invoke("append", 'hello')._
+        => [[1,2,3,"hello"], [1,2,3,"hello"]]
+        """
         self.each(lambda x: getattr(x, method)(*args, **kwargs))
         return self
 
     def max(self, fn=lambda x: x):
+        """
+        get the max item using a key function `fn`
+        `fn` default is `lambda x: x`
+        type: function -> a
+               -> a
+
+        e.g.
+        _([1,2,3,4]).max(lambda x: -x)._
+        => -1
+        """
         return _(max(*self._, key=fn))
 
     def min(self, fn=lambda x: x):
+        """
+        get the min item using a key function `fn`
+        `fn` default is `lambda x: x`
+        type: function -> a
+               -> a
+
+        e.g.
+        _([1,2,3,4]).min(lambda x: -x)._
+        => 4
+        """
         return _(min(*self._, key=fn))
 
     def sorted(self, func=None):
