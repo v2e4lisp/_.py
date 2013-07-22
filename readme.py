@@ -6,10 +6,10 @@ import re
 
 def p(x):
     print(x)
-r = re.compile("\n\s+")
+r = re.compile("        ")
 (_(dir(_))
  .filter(lambda x: getattr(_, x).__doc__ and not x.startswith('__'))
  .map(lambda x: "**"+ x + "**\n\n" + getattr(_, x).__doc__)
- .map(lambda x: x.replace("e.g.", "```python\n") + "```\n")
+ .map(lambda x: r.sub("", x).replace("e.g.", "```python\n") + "```\n")
  .each(p))
 
