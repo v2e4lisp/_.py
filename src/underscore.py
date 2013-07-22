@@ -147,7 +147,7 @@ class _(object):
         return _(_count_by(self._, func))
 
     def count(self, item):
-        if isinstance(self._, set):
+        if self.is_a(set):
             return self.filter(lambda: x == item).size()
         return _(self._.count(item))
 
@@ -190,12 +190,12 @@ class _(object):
         return self.reject(lambda x: x in args)
 
     def union(self, *lists):
-        if isinstance(self._, set):
+        if self.is_a(set):
             return _(self._.union(*lists))
         return _(_union(self._, *lists))
 
     def intersection(self, *lists):
-        if isinstance(self._, set):
+        if self.is_a(set):
             return _(self._.union(*lists))
         return _(_intersection(self._, *lists))
 
@@ -203,7 +203,7 @@ class _(object):
         return _(_uniq(self._))
 
     def difference(self, *lists):
-        if isinstance(self._, set):
+        if self.is_a(set):
             return _(self._.union(*lists))
         return _(_difference(self._, *lists))
 
@@ -302,7 +302,9 @@ class _(object):
         return self
 
 # ------------------------------------ str ------------------------------------
-# TODO
+    def levenshtein(self, s):
+        return _(_levenshtein(self._, s))
+    ld = levenshtein
 
 # ------------------------------------ conversion -----------------------------
     def list(self):
