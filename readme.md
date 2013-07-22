@@ -38,7 +38,8 @@ check if item is part of self._
 
 **type**: a -> boolean
 
-e.g
+```python
+
 _([1,2,3]).contains(1)
 => True
 _({'a': 1,'b': 2, 'c': 3}).contains({'a':1, 'c':3})
