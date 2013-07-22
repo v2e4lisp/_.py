@@ -22,7 +22,7 @@ class TestUnderscoreDict(unittest.TestCase):
         self.assertEqual(self.sample.size()._, 3)
 
     def test_list(self):
-        self.assertEqual(self.sample.list().sort()._, [('a', 1), ('b', 2), ('c', [3])])
+        self.assertEqual(self.sample.list().sort()._, ['a', 'b', 'c'])
 
     def test_pick(self):
         self.assertEqual(self.sample.pick("b")._, {"b": 2})
