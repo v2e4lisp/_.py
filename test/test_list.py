@@ -100,7 +100,7 @@ class TestUnderscoreList(unittest.TestCase):
 
     def test_sort_by(self):
         t = self.sample.deep_copy()
-        self.assertEqual(self.sample.sort_by(lambda x: -x).value(),
+        self.assertEqual(self.sample.sort_by(key=lambda x: -x).value(),
                          t.reverse().value())
 
     def test_group_by(self):

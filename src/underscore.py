@@ -38,6 +38,9 @@ class _(object):
     _(for).cascade._
     '''
 
+    __delegate_methods_alias = {"index_of": "index",
+                                "sort_by" : "sort"}
+
     def __init__(self, data):
         if not isinstance(data, _):
             self._ = data
@@ -68,6 +71,7 @@ class _(object):
 
     def __getattr__(self, name):
         ''' delegate undefined methods to self.value() '''
+        name = self.__delegate_methods_alias.get(name, name)
         return _call(getattr(self._, name), self)
 
     def __contains__(self, item):
@@ -135,10 +139,6 @@ class _(object):
 
     def sorted(self, func=None):
         return _(sorted(self._, key=func))
-
-    def sort_by(self, func=None):
-        self._.sort(key=func)
-        return self
 
     def group_by(self, func):
         return _(_group_by(self._, func))
@@ -215,10 +215,6 @@ class _(object):
 
     def dict_keys(self, keys):
         return _(_dict(keys, self._))
-
-    def index(self, item):
-        return _(self._.index(item))
-    index_of = index
 
     def last_index(self, item):
         return _(self.size()._ - 1 - self.reverse().index(item))
