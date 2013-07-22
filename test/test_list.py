@@ -50,7 +50,7 @@ class TestUnderscoreList(unittest.TestCase):
 
     def test_find_item(self):
         self.assertEqual(self.sample.find_item(lambda x: x == 5)._, 5)
-        self.assertTrue(self.sample.find_item(lambda x: x == 11) is False)
+        self.assertTrue(self.sample.find_item(lambda x: x == 11) is None)
 
     def test_where(self):
         self.assertEqual(self.sample2.where({"b": 2}).list().value(),

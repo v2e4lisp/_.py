@@ -46,7 +46,7 @@ class TestUnderscoreSet(unittest.TestCase):
 
     def test_find_item(self):
         self.assertEqual(self.s.find_item(lambda x: x == 5)._, 5)
-        self.assertTrue(self.s.find_item(lambda x: x == 11) is False)
+        self.assertTrue(self.s.find_item(lambda x: x == 11) is None)
 
     def test_reject(self):
         self.assertEqual(self.s.reject(lambda x: x%2==1).list().sort()._, [2, 4])

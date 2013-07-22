@@ -101,7 +101,7 @@ class _(object):
         return _(filter(func, self._))
 
     def find_item(self, func):
-        return next((_(x) for x in self._ if func(x)), False)
+        return next((_(x) for x in self._ if func(x)), None)
 
     def where(self, cond):
         return self.filter(lambda x: _(x).contains(cond))
