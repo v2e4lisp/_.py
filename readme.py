@@ -9,7 +9,7 @@ def p(x):
 r = re.compile("        ")
 (_(dir(_))
  .filter(lambda x: getattr(_, x).__doc__ and not x.startswith('__'))
- .map(lambda x: "**"+ x + "**\n\n" + getattr(_, x).__doc__)
- .map(lambda x: r.sub("", x).replace("e.g.", "```python\n") + "```\n")
+ .map(lambda x: "**"+ x + "**\n" + getattr(_, x).__doc__)
+ .map(lambda x: r.sub("", x).replace("e.g.", "```python\n").replace("type", "\n/type/") + "```\n")
  .each(p))
 
