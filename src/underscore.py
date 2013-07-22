@@ -51,12 +51,12 @@ class _(object):
         return object.__new__(cls)
 
     def __getstate__(self):
-        '''
+        """
         in python3 if you inherit from object
         the __getstate__ won't work any more, which means
         you can't copy.deepcopy an instance of this class.
         This is a fix
-        '''
+        """
         return self._
 
     def __setstate__(self, state):
@@ -298,6 +298,7 @@ class _(object):
         return self
 
 # ------------------------------------ str ------------------------------------
+
     def levenshtein(self, s):
         return _(_levenshtein(self._, s))
     ld = levenshtein
