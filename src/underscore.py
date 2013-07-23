@@ -87,7 +87,7 @@ class _(object):
         e.g.
         _([1,2,3]).value()
         => [1,2,3]
-        which is the same as _([1,2,3])._
+        # which is the same as _([1,2,3])._
         """
         return self._
 
@@ -464,65 +464,255 @@ class _(object):
     take = initial = but_last
 
     def rest(self, n=1):
+        """
+        return all but first n items. n deafult is 1.
+        @param  : int
+        @return : _
+
+        e.g.
+        _([1,2,3,4]).rest()._
+        => [2,3,4]
+        """
         return _(self._[n:])
 
     def compact(self):
+        """
+        it's equivalent to `reject(lambda x: bool(x))`
+        @param  : none
+        @return : _
+
+        e.g.
+        _(['', None, False, 0]).compact()._
+        => []
+        """
         return self.filter()
 
     def flatten(self, deep=False):
+        """
+        flatten a list, when `deep` is set to `True`,
+        this will recursively flatten the whole list.
+        `deep` default is `False`
+        @param  : bool
+        @return : _
+
+        e.g.
+        _([1,2,[3], [[4]]]).flatten()._
+        => [1,2,3,[4]]
+
+        _([1,2,[3], [[4]]]).flatten(True)._
+        => [1,2,3,4]
+        """
         return _(_flatten(self._, deep))
 
     def without(self, *args):
+        """
+        remove any item in `args` from `self._`
+        @param  : *args
+        @return : _
+
+        e.g.
+        _([1,2,2,3,4,1]).without(2,1)._
+        => [3,4]
+        """
         return self.reject(lambda x: x in args)
 
     def union(self, *lists):
+        """
+        merge `*lists` if there is any. and delete duplicated items.
+        if self._ is a set, then the return _ object holds a set.
+        @param  : *lists
+        @return : _
+
+        e.g.
+        _([1,2,2,3]).union()._
+        => [1,2,3]
+
+        _([1,2,2,3]).union([2,3,4], [4,5])._
+        => [1,5]
+
+        # set
+        _({1,2,3,4}).union([1,2,6])._
+        => set([1,2,3,4,6])
+        """
         if self.is_a(set):
             return _(self._.union(*lists))
         return _(_union(self._, *lists))
 
     def intersection(self, *lists):
+        """
+        self._ and lists intersection.
+        if self._ is a set, then the return _ object holds a set.
+        @param  : *lists
+        @return : _
+
+        e.g.
+        _([1,2,2,3]).intersection([2,3,4], [2,5])._
+        => [2]
+
+        # set
+        _({1,2,3,4}).intersection([1,2,6])._
+        => set([1,2])
+        """
         if self.is_a(set):
-            return _(self._.union(*lists))
+            return _(self._.intersection(*lists))
         return _(_intersection(self._, *lists))
 
     def uniq(self):
+        """
+        no duplicated items.
+        @param  : none
+        @return : _
+
+        e.g.
+        _([1,2,3,2]).uniq()._
+        => [1,2,3]
+        """
         return _(_uniq(self._))
 
     def difference(self, *lists):
+        """
+        items in self._ but not present in lists
+        if self._ is a set, then the return _ object holds a set.
+        `diff` is its alias.
+        @param  : *lists
+        @return : _
+
+        e.g.
+        _([1,2,2,3]).differece([2,3,4], [2,5])._
+        => [1]
+
+        # set
+        _({1,2,3,4}).difference([1,2,6])._
+        => set([3,4])
+        """
         if self.is_a(set):
-            return _(self._.union(*lists))
+            return _(self._.difference(*lists))
         return _(_difference(self._, *lists))
+    diff = difference
 
     def zip(self, *lists):
+        """
+        merge self._ and lists in a way that each time pick one item from each of the lists
+        and self._ , then make a tuple out of it.
+        @param  : *lists
+        @return : _
+
+        e.g.
+        _([1,2,3,4]).zip([1,2,3])._
+        => [(1,1), (2,2), (3,3)]
+        """
         return _(zip(self._, *lists))
 
     def dict_values(self, values):
+        """
+        make a `dict` with `values` as value and `self._` as key
+        @param  : a
+        @return : _(dict)
+
+        e.g.
+        _(['a', 'k']).dict_values((1,2))._
+        => {'a': 1, 'k': 2}
+        """
         return _(_dict(self._, values))
 
     def dict_keys(self, keys):
+        """
+        make a `dict` with keys as key and self._ as value
+        @param  : a
+        @return : _(dict)
+
+        e.g.
+        _([1,2,3]).dict_keys(['a', 'b', 'c'])._
+        => {'a': 1, 'b': 2, 'c': 3}
+        """
         return _(_dict(keys, self._))
 
     def last_index(self, item):
-        return _(self.size()._ - 1 - self.reverse().index(item))
+        """
+        return the last index of item in `self._`.
+        since it use the builtin `index` method, if no such item found
+        it will raise ValueError.
+        `last_index_of` is its alias.
+
+        e.g.
+        _([1,3,2,3]).last_index(3)._
+        => 3
+        """
+        return _(self.size()._ - 1 - self.reverse().index(item)._)
     last_index_of = last_index
 
     def sorted_index(self, item):
+        """
+        Uses a binary search to determine the index at which the value should be
+        inserted into the list in order to maintain the list's sorted order
+        the return index will be as large as possible. see the e.g.
+        @param  : a
+        @return : _(int)
+
+        e.g.
+        _([1,2,3,4,5,6]).sorted_index(4)._
+        => 4
+
+        _([1,2,3,4,4,4,5,6]).sorted_index(4)._
+        => 6
+        """
         return _(_sorted_index(self._, item))
 
     def pairs(self):
+        """
+        list of tuples containing two items.
+        if self._ is dict then it will be key-value tuple.
+        @param  : none
+        @return : _([(a,b)])
+        """
         return self.items() if self.is_a(dict) else self.chunks(2)
 
     def chunks(self, n):
+        """
+        divide the self._ into n-size list
+        @param  : int
+        @return : _([[a]])
+        """
         return _([self._[i:i+n] for i in range(0, self.size()._, n)])
 
     def is_a(self, t):
+        """
+        test if self._ is a `t`.
+        @param  : type
+        @return : bool
+
+        e.g.
+        _([1,2,3,4]).is_a(list)
+        => True
+        """
         return isinstance(self._, t)
 
     def pluck(self, key):
+        """
+        extracting a list of property values from self._ which is a list of dict
+        @param  : a
+        @return : _([])
+
+        _([{"a": 1, "b": 2}, {"a": 3, "c": 4}]).pluck("a")._
+        => [1,3]
+        """
         return self.map(lambda x: x[key])
 
     def join(self, sep):
-        if isinstance(self._, str):
+        """
+        concat a list of strings by sep which is string,
+        and if sep is a list of string then concat the sep by self._
+        @param  : [str] || str
+        @return : _(str)
+
+        e.g.
+        _(['a', 'b']).join('/')._
+        => 'a/b'
+
+        _('/').join(['a', 'b'])._
+        => 'a/b'
+        """
+        if self.is_a(str):
             return _(self._.join(sep))
         return _(sep.join(self._))
 

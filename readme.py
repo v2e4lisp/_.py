@@ -3,7 +3,6 @@ sys.path.append("/Users/wenjunyan/_py/src")
 sys.path.append("/Users/wenjun.yan/tmp/_.py/src")
 from underscore import _
 import inspect
-import re
 
 def p(x): print(x)
 
@@ -18,7 +17,6 @@ def args(x):
 
 def dl(x):
     return x + "("+ args(x) + ")"
-
 
 (_(dir(_))
  .filter(lambda x: getattr(_, x).__doc__ and not x.startswith('__'))
