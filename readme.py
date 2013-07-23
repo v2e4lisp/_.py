@@ -4,8 +4,7 @@ sys.path.append("/Users/wenjun.yan/tmp/_.py/src")
 from underscore import _
 import re
 
-def p(x):
-    print(x)
+def p(x): print(x)
 r = re.compile("        ")
 (_(dir(_))
  .filter(lambda x: getattr(_, x).__doc__ and not x.startswith('__'))

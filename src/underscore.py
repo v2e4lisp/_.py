@@ -81,7 +81,8 @@ class _(object):
     def value(self):
         """
         get the value out of the _ object
-        type: -> a
+        @param  : `none`
+        @return : `self._`
 
         e.g.
         _([1,2,3]).value()
@@ -96,6 +97,8 @@ class _(object):
         """
         apply the `func` to every item
         type: function -> _
+        @param  : `function(a)`
+        @return : `_`
 
         e.g.
         def printit(it): print(it)
@@ -112,7 +115,8 @@ class _(object):
     def map(self, func):
         """
         apply `func` to every item, and collect the result.
-        type: function -> _
+        @param  : `function(a) -> b`
+        @return : `_`
 
         e.g.
         _([1,2,3]).map(lambda x: x+1)._
@@ -123,7 +127,9 @@ class _(object):
     def reduce(self, func, init=None):
         """
         left-fold the self._ by `func` with initial value set to `init`
-        type: function * a -> _
+        @param  : `function(t, s) -> t`
+        @param  : `init=t`
+        @return : `_`
 
         e.g.
         _([1,2,3]).reduce(lambda t, x: t-x)._
@@ -134,7 +140,9 @@ class _(object):
     def reduce_right(self, func, init=None):
         """
         right-fold the self._ by `func` with initial value set to `init`
-        type: function * a -> _(b)
+        @param  : `function(t, s)`
+        @param  : `init=t`
+        @return : `_`
 
         e.g.
         _([1,2,3]).reduce_right(lambda t, x: t-x)._
@@ -146,7 +154,8 @@ class _(object):
         """
         looks through the self._ and collect the items that passed
         `func`(return true). the default `func` is `bool`.
-        type: function -> _
+        @param  : `function(a) -> bool`
+        @return : `_`
 
         e.g.
         _([1,2,3,4]).filter(lambda x: x % 2 == 0)._
@@ -158,7 +167,8 @@ class _(object):
         """
         find the first item when `func(item)` reutrn `True`.
         it return as soon as it finds such an item.
-        type: function -> _(a)
+        @param  : `function(a) -> bool`
+        @return : `_(a) || None`
 
         e.g.
         _([1,2,2,4]).find_item(lambda x: x == 2)._
@@ -169,7 +179,8 @@ class _(object):
     def find_where(self, cond):
         """
         find the first item whoses (key, value) pair matches `cond`
-        type: dict -> _(dict)
+        @param  : `dict`
+        @return : `_(dict) || None`
 
         e.g.
         _([{"a": 1, "b":2}, {"c":1, "d":2}]).find_where({"a":1})._
@@ -180,7 +191,8 @@ class _(object):
     def where(self, cond):
         """
         find all items whose (key, value) pairs matches `cond`
-        type: dict -> _([dict])
+        @param  : `dict`
+        @return : `_([dict])`
 
         e.g.
         _([{"a": 1, "b":2}, {"a": 1, "b":1}, {"c":1, "d":2}]).find_where({"a":1})._
@@ -192,7 +204,8 @@ class _(object):
         """
         collect items which dosen't pass the `func`(return `False`)
         `func` default is `bool`
-        type: function -> _
+        @param  : `function(a) -> bool`
+        @return : `_`
 
         e.g.
         _([1,2,3,4]).reject(lambda x: x%2 == 0)._
@@ -203,10 +216,9 @@ class _(object):
     def all(self, func=bool):
         """
         check if all items can pass the `func`(return `True`)
-        func default is bool.
-        `every` is an alias of `all`
-        type: function -> boolean
-              _ -> boolean
+        `func` default is bool. `every` is an alias of `all`.
+        @param  : `function(a) -> bool`
+        @return : `bool`
 
         e.g.
         _([1,2,3]).all(lambda x: x>0)
@@ -218,9 +230,9 @@ class _(object):
     def some(self, func=bool):
         """
         check if any item in self._ can pass the `func`(return `True`)
-        func default is bool.
-        `any` is an alias of `some`
-        type: function -> boolean
+        func default is bool. `any` is an alias of `some`
+        @param  : `function(a) -> bool`
+        @return : `bool`
 
         e.g.
         _([1,2,3]).some(lambda x: x>2)
@@ -234,7 +246,8 @@ class _(object):
     def contains(self, item):
         """
         check if item is part of self._
-        type: a -> boolean
+        @param  : `a`
+        @return : `bool`
 
         e.g.
         _([1,2,3]).contains(1)
@@ -249,7 +262,10 @@ class _(object):
     def invoke(self, method, *args, **kwargs):
         """
         invoke method with args on every item
-        type: method * args * kwargs -> _
+        @param  : `function`
+        @param  : `*args`
+        @param  : `**kwargs`
+        @return : `_`
 
         e.g.
         _([1,2,3], [3,4,5]).invoke("append", 'hello')._
@@ -262,7 +278,8 @@ class _(object):
         """
         get the max item using a key function `fn`
         `fn` default is `lambda x: x`
-        type: function -> a
+        @param  : `function(a) -> b`
+        @return : `_(a)`
 
         e.g.
         _([1,2,3,4]).max(lambda x: -x)._
@@ -274,7 +291,8 @@ class _(object):
         """
         get the min item using a key function `fn`
         `fn` default is `lambda x: x`
-        type: function -> a
+        @param  : `function(a) -> b`
+        @return : `_(a)`
 
         e.g.
         _([1,2,3,4]).min(lambda x: -x)._
@@ -283,42 +301,165 @@ class _(object):
         return _(min(*self._, key=fn))
 
     def sorted(self, func=None):
+        """
+        sort the self._
+        @param  : `function(a) -> k`
+        @return : `_`
+
+        e.g.
+        _([3,2,1]).sorted(lambda x: x)._
+        => [1,2,3]
+        """
         return _(sorted(self._, key=func))
 
     def group_by(self, func):
+        """
+        group items by function, return a dict which key is generated by
+        `func` and value is a list.
+        @param  : `function(a) -> b`
+        @return : `_(dict)`
+
+        e.g.
+        _([1,2,3,4]).group_by(lambda x: x%2)._
+        => {1: [1,3], 0: [2,4]}
+        """
         return _(_group_by(self._, func))
 
     def count_by(self, func=bool):
+        """
+        count each element in each group. `func` default is bool
+        @param  : `function(a) -> b`
+        @return : `_(dict)`
+
+        e.g.
+        _([1,2,3,4,5]).count_by(lambda x: x%2)._
+        => {1: 3, 0: 2}
+        """
         return _(_count_by(self._, func))
 
     def count(self, item):
-        if self.is_a(set):
-            return self.filter(lambda: x == item).size()
+        """
+        count a certain item
+        @param  : `item`
+        @return : `_(int)`
+
+        e.g.
+        _([1,2,3,2,1]).count(1)._
+        => 2
+        """
         return _(self._.count(item))
 
     def shuffle(self):
+        """
+        @param  : `none`
+        @return : `_`
+
+        e.g.
+        _([1,2,3]).shuffle()._
+        => ...
+        """
         _shuffle(self._)
         return self
 
     def size(self):
+        """
+        return the size of the collection
+        @param  : `none`
+        @return : `_(int)`
+
+        e.g.
+        _([1,2,3]).size()._
+        => 3
+        """
         return _(len(self._))
 
     def copy(self, deep=False):
+        """
+        (deep or shallow) copy `self._`. `deep` default is `False`
+        @param  : `bool`
+        @return : `_`
+
+        e.g.
+        _a = _([1,2,3])
+        b = _a.copy()
+        b == _a._
+        => True
+
+        b.append('hello')
+        b == _a._
+        => False
+        """
         return _(copy.deepcopy(self._) if deep else copy.copy(self._))
 
     def deep_copy(self):
+        """
+        deep copy self._
+        @param  : `none`
+        @return : `_`
+
+        e.g.
+        _a = _([1,2,[3]])
+        b = _a.copy()
+        b == _a._
+        => True
+
+        b[-1].append('4')
+        print b
+        => [1,2,[3,4]]
+        print _a._
+        => [1,2,[3]]
+        """
         return self.copy(True)
 
     def clone(self):
+        """
+        shallow copy
+        @param  : `none`
+        @return : `_`
+
+        e.g.
+        _a = _([1,2,[3]])
+        b = _a.copy()
+        b == _a._
+        => True
+        """
         return self.copy(False)
 
     def first(self):
+        """
+        get the first value . the same as self._[0]
+        @param  : `none`
+        @return : `_(a)`
+
+        e.g.
+        _([1,2,3]).first._
+        => 1
+        """
         return _(self._[0])
 
     def last(self):
+        """
+        get the last item . the same as self._[-1]
+        @param  : `none`
+        @return : `_(a)`
+
+        e.g.
+        _([1,2,3]).last._
+        => 3
+        """
         return _(self._[-1])
 
     def but_last(self, n=1):
+        """
+        return all but last n items. n default is 1.
+        `take` and `initial` are its aliases.
+        @param  : `int`
+        @return : `_`
+
+        e.g.
+        _([1,2,3,4]).but_last()._
+        => [1,2,3]
+        """
         return _(self._[0:-n])
     take = initial = but_last
 
