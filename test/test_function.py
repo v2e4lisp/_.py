@@ -5,18 +5,12 @@ import sys
 from test_helper import *
 sys.path.append("/Users/wenjunyan/_py/src")
 sys.path.append("/Users/wenjun.yan/tmp/_.py/src")
-from underscore import _shuffle, _flatten, _group_by, _count_by, _union, _dict, _sorted_index, _uniq, _intersection, _difference
+from helper import _flatten, _group_by, _count_by, _union, _dict, _sorted_index, _uniq, _intersection, _difference
 
 class TestUnderscoreFunction(unittest.TestCase):
 
     def setUp(self):
         self.seq = list(range(10))
-
-    def test_shuffle(self):
-        shuffled = self.seq[:]
-        _shuffle(shuffled)
-        self.assertEqual(len(shuffled), len(self.seq))
-        self.assertFalse(shuffled == self.seq)
 
     def test_flatten(self):
         t = [1,2,[3],[2,3,[4]]]

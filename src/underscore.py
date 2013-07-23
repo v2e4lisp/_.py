@@ -1,11 +1,8 @@
 import random
-import collections
+import helper
 import copy
 import math
-from sys import version_info
-if version_info.major > 2:
-    from functools import reduce
-
+from functools import reduce
 
 # delegator...
 class _call(object):
@@ -30,7 +27,7 @@ class _call(object):
 
 
 # underscore class
-class _(object):
+class _Underscore(object):
 
     '''
     a python container(and number) wrapper
@@ -42,11 +39,11 @@ class _(object):
                                 "sort_by" : "sort"}
 
     def __init__(self, data):
-        if not isinstance(data, _):
+        if not isinstance(data, _Underscore):
             self._ = data
 
     def __new__(cls, *args, **kwargs):
-        if len(args) > 0 and isinstance(args[0], _):
+        if len(args) > 0 and isinstance(args[0], _Underscore):
             return args[0]
         return object.__new__(cls)
 
@@ -323,7 +320,7 @@ class _(object):
         _([1,2,3,4]).group_by(lambda x: x%2)._
         => {1: [1,3], 0: [2,4]}
         """
-        return _(_group_by(self._, func))
+        return _(helper._group_by(self._, func))
 
     def count_by(self, func=bool):
         """
@@ -335,7 +332,7 @@ class _(object):
         _([1,2,3,4,5]).count_by(lambda x: x%2)._
         => {1: 3, 0: 2}
         """
-        return _(_count_by(self._, func))
+        return _(helper._count_by(self._, func))
 
     def count(self, item):
         """
@@ -358,7 +355,7 @@ class _(object):
         _([1,2,3]).shuffle()._
         => ...
         """
-        _shuffle(self._)
+        random.shuffle(self._)
         return self
 
     def size(self):
@@ -502,7 +499,7 @@ class _(object):
         _([1,2,[3], [[4]]]).flatten(True)._
         => [1,2,3,4]
         """
-        return _(_flatten(self._, deep))
+        return _(helper._flatten(self._, deep))
 
     def without(self, *args):
         """
@@ -536,7 +533,7 @@ class _(object):
         """
         if self.is_a(set):
             return _(self._.union(*lists))
-        return _(_union(self._, *lists))
+        return _(helper._union(self._, *lists))
 
     def intersection(self, *lists):
         """
@@ -555,7 +552,7 @@ class _(object):
         """
         if self.is_a(set):
             return _(self._.intersection(*lists))
-        return _(_intersection(self._, *lists))
+        return _(helper._intersection(self._, *lists))
 
     def uniq(self):
         """
@@ -567,7 +564,7 @@ class _(object):
         _([1,2,3,2]).uniq()._
         => [1,2,3]
         """
-        return _(_uniq(self._))
+        return _(helper._uniq(self._))
 
     def difference(self, *lists):
         """
@@ -587,7 +584,7 @@ class _(object):
         """
         if self.is_a(set):
             return _(self._.difference(*lists))
-        return _(_difference(self._, *lists))
+        return _(helper._difference(self._, *lists))
     diff = difference
 
     def zip(self, *lists):
@@ -613,7 +610,7 @@ class _(object):
         _(['a', 'k']).dict_values((1,2))._
         => {'a': 1, 'k': 2}
         """
-        return _(_dict(self._, values))
+        return _(helper._dict(self._, values))
 
     def dict_keys(self, keys):
         """
@@ -625,7 +622,7 @@ class _(object):
         _([1,2,3]).dict_keys(['a', 'b', 'c'])._
         => {'a': 1, 'b': 2, 'c': 3}
         """
-        return _(_dict(keys, self._))
+        return _(helper._dict(keys, self._))
 
     def last_index(self, item):
         """
@@ -656,7 +653,7 @@ class _(object):
         _([1,2,3,4,4,4,5,6]).sorted_index(4)._
         => 6
         """
-        return _(_sorted_index(self._, item))
+        return _(helper._sorted_index(self._, item))
 
     def pairs(self):
         """
@@ -932,7 +929,7 @@ class _(object):
 # string function bought from underscore.string.js
 
     def levenshtein(self, s):
-        return _(_levenshtein(self._, s))
+        return _(helper._levenshtein(self._, s))
     ld = levenshtein
 
 # ------------------------------------ conversion -----------------------------
@@ -948,83 +945,24 @@ class _(object):
     def str(self):
         return _(str(self._))
 
-# --------------------
-# - helper functions -
-# --------------------
+def _(data):
+    ''' factory function. '''
+    t = type(data)
+    if t is set:
+        return Set_(data)
+    elif t is list:
+        return List_(data)
+    elif t is int or float:
+        return Number_(data)
+    elif t is tuple:
+        return Tuple_(data)
+    elif t is dict:
+        return Dict_(data)
+    elif t is str:
+        return Str_(data)
+    elif t is collections.Iterable:
+        return Iter_(data)
+    else:
+        return Nonsense_(data)
 
-
-def _shuffle(data):
-    random.shuffle(data)
-
-
-def _flatten(data, deep=False):
-    sub = lambda x: (isinstance(x, list) and (deep and _flatten(x, True) or x)
-                     or [x])
-    return reduce(lambda total, x: total + sub(x), data, [])
-
-
-def _group_by(data, func):
-    result = {}
-    for i in data:
-        key = func(i)
-        if key not in result:
-            result[key] = []
-        result[key].append(i)
-    return result
-
-
-def _count_by(data, func):
-    result = {}
-    for i in data:
-        key = func(i)
-        result[key] = result[key] + 1 if key in result else 1
-    return result
-
-
-def _union(*lists):
-    return _uniq(_flatten(lists))
-
-
-def _intersection(*lists):
-    return reduce(lambda r, x: [i for i in r if i in x], lists[1:], lists[0])
-
-
-def _uniq(data):
-    return list(collections.OrderedDict.fromkeys(data).keys())
-
-
-def _difference(data, *lists):
-    lists = _flatten(lists)
-    return [i for i in data if i not in lists]
-
-
-def _dict(keys, values):
-    return dict(zip(keys, values))
-
-
-def _sorted_index(data, item):
-    def si(s, e):
-        if s > e:
-            return s
-        m = int((s + e)/2)
-        return si(s, m-1) if data[m] > item else si(m+1, e)
-    return si(0, len(data) - 1)
-
-
-def _levenshtein(s1, s2):
-    l1, l2 = len(s1), len(s2)
-    memo = [[None] * l2 for i in range(l1)]
-
-    def ld(e1, e2):
-        if e1 == -1:
-            return e2 + 1
-        if e2 == -1:
-            return e1 + 1
-        if memo[e1][e2] is None:
-            cost = 0 if s1[e1] == s2[e2] else 1
-            memo[e1][e2] = min(ld(e1-1, e2) + 1,
-                               ld(e1, e2-1) + 1,
-                               ld(e1-1, e2-1) + cost)
-        return memo[e1][e2]
-
-    return ld(l1-1, l2-1)
+from datatype import *
