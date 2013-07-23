@@ -191,7 +191,7 @@ _(['a', 'k']).dict_values((1,2))._
 => {'a': 1, 'k': 2}
 ```
 
-### diff(, *lists)
+### diff(*lists)
 items in self._ but not present in lists
 if self._ is a set, then the return _ object holds a set.
 `diff` is its alias.
@@ -210,7 +210,7 @@ _({1,2,3,4}).difference([1,2,6])._
 => set([3,4])
 ```
 
-### difference(, *lists)
+### difference(*lists)
 items in self._ but not present in lists
 if self._ is a set, then the return _ object holds a set.
 `diff` is its alias.
@@ -361,7 +361,7 @@ _([1,2,3,4]).but_last()._
 => [1,2,3]
 ```
 
-### intersection(, *lists)
+### intersection(*lists)
 self._ and lists intersection.
 if self._ is a set, then the return _ object holds a set.
 
@@ -667,7 +667,7 @@ _([1,2,3,4]).but_last()._
 => [1,2,3]
 ```
 
-### union(, *lists)
+### union(*lists)
 merge `*lists` if there is any. and delete duplicated items.
 if self._ is a set, then the return _ object holds a set.
 
@@ -728,7 +728,7 @@ _([{"a": 1, "b":2}, {"a": 1, "b":1}, {"c":1, "d":2}]).find_where({"a":1})._
 => [{"a": 1, "b":2}, {"a": 1, "b":1}]
 ```
 
-### without(, *args)
+### without(*args)
 remove any item in `args` from `self._`
 
 **@param**  : *args
@@ -741,7 +741,7 @@ _([1,2,2,3,4,1]).without(2,1)._
 => [3,4]
 ```
 
-### zip(, *lists)
+### zip(*lists)
 merge self._ and lists in a way that each time pick one item from each of the lists
 and self._ , then make a tuple out of it.
 

@@ -10,9 +10,9 @@ def args(x):
     s = inspect.getargspec(getattr(_, x))
     r = ", ".join(s.args[1:])
     if s.varargs:
-        r = r + ", *" + s.varargs
+        r = r + (r and ", ") + "*" + s.varargs
     if s.keywords:
-        r = r + ", **" + s.keywords
+        r = r + (r and ", ") + "**" + s.keywords
     return r
 
 def dl(x):
