@@ -23,7 +23,7 @@ def dl(x):
 (_(dir(_))
  .filter(lambda x: getattr(_, x).__doc__ and not x.startswith('__'))
  .map(lambda x: "### "+ dl(x) + getattr(_, x).__doc__)
- .map(lambda x: inspect.cleandoc(x).replace("e.g.", "```python\n").replace("type", "\n**type**") + "```\n")
+ .map(lambda x: inspect.cleandoc(x).replace("e.g.", "```python\n").replace("type", "\n**type**") + "\n```\n")
  .map(lambda x: x.replace("@param", "\n**@param**"))
  .map(lambda x: x.replace("@return", "\n**@return**"))
  .each(p))
