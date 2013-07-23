@@ -660,10 +660,17 @@ class _(object):
 
     def pairs(self):
         """
-        list of tuples containing two items.
+        list of lists containing two items.
         if self._ is dict then it will be key-value tuple.
         @param  : none
         @return : _([(a,b)])
+
+        e.g.
+        _([1,2,3,4,5]).pairs()._
+        => [[1,2], [3,4], [5]]
+
+        _({"a": 1, "b": 2}).pairs()._
+        => [("a", 1), ("b", 2)]
         """
         return self.items() if self.is_a(dict) else self.chunks(2)
 
@@ -672,6 +679,10 @@ class _(object):
         divide the self._ into n-size list
         @param  : int
         @return : _([[a]])
+
+        e.g.
+        _([1,2,3,4]).chunks(3)._
+        => [[1,2,3], [4]]
         """
         return _([self._[i:i+n] for i in range(0, self.size()._, n)])
 
@@ -693,6 +704,7 @@ class _(object):
         @param  : a
         @return : _([])
 
+        e.g.
         _([{"a": 1, "b": 2}, {"a": 3, "c": 4}]).pluck("a")._
         => [1,3]
         """

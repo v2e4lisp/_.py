@@ -80,6 +80,11 @@ divide the self._ into n-size list
 **@param**  : int
 
 **@return** : _([[a]])
+
+```python
+
+_([1,2,3,4]).chunks(3)._
+=> [[1,2,3], [4]]
 ```
 
 ### clone()
@@ -507,7 +512,7 @@ _([1,2,3], [3,4,5]).invoke("append", 'hello')._
 ### is_a(t)
 test if self._ is a `t`.
 
-**@param**  : 
+**@param**  :
 **type**
 
 **@return** : bool
@@ -640,12 +645,20 @@ _({"a": 1, "b": 2, "c": 2}).omit("b", "c")._
 ```
 
 ### pairs()
-list of tuples containing two items.
+list of lists containing two items.
 if self._ is dict then it will be key-value tuple.
 
 **@param**  : none
 
 **@return** : _([(a,b)])
+
+```python
+
+_([1,2,3,4,5]).pairs()._
+=> [[1,2], [3,4], [5]]
+
+_({"a": 1, "b": 2}).pairs()._
+=> [("a", 1), ("b", 2)]
 ```
 
 ### pick(*keys)
@@ -667,6 +680,8 @@ extracting a list of property values from self._ which is a list of dict
 **@param**  : a
 
 **@return** : _([])
+
+```python
 
 _([{"a": 1, "b": 2}, {"a": 3, "c": 4}]).pluck("a")._
 => [1,3]
@@ -957,4 +972,3 @@ and self._ , then make a tuple out of it.
 _([1,2,3,4]).zip([1,2,3])._
 => [(1,1), (2,2), (3,3)]
 ```
-
