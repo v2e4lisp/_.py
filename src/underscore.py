@@ -645,7 +645,7 @@ class _(object):
         """
         Uses a binary search to determine the index at which the value should be
         inserted into the list in order to maintain the list's sorted order
-        the return index will be as large as possible. see the e.g.
+        the return index will be as large as possible. see the examples.
         @param  : a
         @return : _(int)
 
@@ -719,61 +719,205 @@ class _(object):
 #------------------------------------- dict ------------------------------
 
     def pick(self, *keys):
+        """
+        get a new dict by picking from `self._ ` by `keys`
+        @param  : *keys
+        @return : _(dict)
+
+        e.g.
+        _({"a": 1, "b": 2}).pick("a")._
+        => {"a": 1}
+        """
         return _({k: self[k] for k in keys})
 
     def omit(self, *keys):
+        """
+        get a new dict by filtering out keys from self._
+        @param  : *keys
+        @return : _(dict)
+
+        e.g.
+        _({"a": 1, "b": 2, "c": 2}).omit("b", "c")._
+        => {"a": 1}
+        """
         return _({k: self[k] for k in self._ if k not in keys})
 
     def invert(self):
+        """
+        invert dict's key and value
+        @param  : none
+        @return : _(dict)
+
+        e.g.
+        _({"k1": "v1", "k2": "v2"}).invert()._
+        {"v1": "k1", "v2": "k2"}
+        """
         return _({self[k]: k for k in self._})
 
-    def defaults(self, *args, **kwargs):
+    def defaults(self, **kwargs):
+        """
+        add key and value to self._ only if key is not in self._ .
+        @param  : *kwargs
+        @return : _(dict)
+
+        e.g.
+        _({"a":1}).default({"a":2, "b": 3})._
+        => {"a": 1, "b": 3}
+        """
         for i in kwargs:
             self._.setdefault(i, kwargs[i])
         return self
 
 # --------------------------------- number -------------------------------
 
-    def times(self, l):
+    # number object bought from ruby
+    def times(self, fn):
+        """
+        call fn self._ times
+        @param  : function()
+        @return : _(number)
+
+        e.g.
+        def p(): print('s')
+        _(3).times(p)
+        => s
+        => s
+        => s
+        """
         for i in range(0, self._):
-            l()
+            fn()
         return self
 
     def ceil(self):
+        """
+        math.ceil
+        @param  : none
+        @return : _(float)
+
+        e.g.
+        _(1.2).ceil()._
+        => 2.0
+        """
         return _(math.ceil(self._))
 
     def floor(self):
+        """
+        math.floor
+        @param  : none
+        @return : _(float)
+
+        e.g.
+        _(1.2).floor()._
+        => 1.0
+        """
         return _(math.floor(self._))
 
     def chr(self):
+        """
+        builtin chr
+        @param  : none
+        @return : _(str)
+
+        e.g.
+        _(65).chr()._
+        'A'
+        """
         return _(chr(self._))
 
-    def down_to(self, n, l):
-        for i in range(self._, n, -1):
-            l(i)
-        return self
-
     def even(self):
+        """
+        check if the number is even
+        @param  : none
+        @return : bool
+
+        e.g.
+        _(2).even()
+        => True
+        """
         return self._ % 2 == 0
 
     def odd(self):
+        """
+        check if the number is odd.
+        @param  : none
+        @return : bool
+
+        e.g.
+        _(2).odd()
+        => False
+        """
         return not self.even()
 
     def succ(self):
+        """
+        @param  : none
+        @return : _(int)
+
+        e.g.
+        _(2).succ()._
+        => 3
+        """
         return _(self._ + 1)
 
     def pred(self):
+        """
+        @param  : none
+        @return : _(int)
+
+        e.g.
+        _(2).pred()._
+        => 1
+        """
         return _(self._ - 1)
 
     def int(self):
+        """
+        convert to integer
+        @param  : none
+        @return : _(int)
+
+        e.g.
+        _(2.3).int()._
+        2
+        """
         return _(int(self._))
 
     def up_to(self, n, l):
+        """
+        iterate from `self._` to `n` pass the number to function `fn`.
+        @param  : int
+        @param  : function(int)
+        @return : _(int)
+
+        e.g.
+        result = []
+        _(5).down_to(1, lambda x: result.append(x))
+        print result
+        => [5,4,3,2]
+        """
         for i in range(self._, n):
             l(i)
         return self
 
+    def down_to(self, n, fn):
+        """
+        iterate from `self._` to `n` pass the number to function `fn`.
+        @param  : int
+        @param  : function(int)
+        @return : _(int)
+
+        e.g.
+        result = []
+        _(5).down_to(1, lambda x: result.append(x))
+        print result
+        => [5,4,3,2]
+        """
+        for i in range(self._, n, -1):
+            fn(i)
+        return self
+
 # ------------------------------------ str ------------------------------------
+# string function bought from underscore.string.js
 
     def levenshtein(self, s):
         return _(_levenshtein(self._, s))
