@@ -156,6 +156,9 @@ class Iterable_(object):
         ''' in operator '''
         return item in self._
 
+    def __iter__(self):
+        return self._.__iter__()
+
     def each(self, func):
         """
         apply the `func` to every item
