@@ -78,8 +78,6 @@ class _Underscore(object):
         """
         return self._
 
-#----------------------- collections -----------------------
-
     def copy(self, deep=False):
         """
         (deep or shallow) copy `self._`. `deep` default is `False`
@@ -131,48 +129,6 @@ class _Underscore(object):
         => True
         """
         return self.copy(False)
-
-
-    def compact(self):
-        """
-        it's equivalent to `reject(lambda x: bool(x))`
-        @param  : none
-        @return : _
-
-        e.g.
-        _(['', None, False, 0]).compact()._
-        => []
-        """
-        return self.filter()
-
-    def flatten(self, deep=False):
-        """
-        flatten a list, when `deep` is set to `True`,
-        this will recursively flatten the whole list.
-        `deep` default is `False`
-        @param  : bool
-        @return : _
-
-        e.g.
-        _([1,2,[3], [[4]]]).flatten()._
-        => [1,2,3,[4]]
-
-        _([1,2,[3], [[4]]]).flatten(True)._
-        => [1,2,3,4]
-        """
-        return _(helper._flatten(self._, deep))
-
-    def without(self, *args):
-        """
-        remove any item in `args` from `self._`
-        @param  : *args
-        @return : _
-
-        e.g.
-        _([1,2,2,3,4,1]).without(2,1)._
-        => [3,4]
-        """
-        return self.reject(lambda x: x in args)
 
     def union(self, *lists):
         """
@@ -248,19 +204,6 @@ class _Underscore(object):
         return _(helper._difference(self._, *lists))
     diff = difference
 
-    def zip(self, *lists):
-        """
-        merge self._ and lists in a way that each time pick one item from each of the lists
-        and self._ , then make a tuple out of it.
-        @param  : *lists
-        @return : _
-
-        e.g.
-        _([1,2,3,4]).zip([1,2,3])._
-        => [(1,1), (2,2), (3,3)]
-        """
-        return _(zip(self._, *lists))
-
     def dict_values(self, values):
         """
         make a `dict` with `values` as value and `self._` as key
@@ -285,37 +228,6 @@ class _Underscore(object):
         """
         return _(helper._dict(keys, self._))
 
-    def last_index(self, item):
-        """
-        return the last index of item in `self._`.
-        since it use the builtin `index` method, if no such item found
-        it will raise ValueError.
-        `last_index_of` is its alias.
-
-        e.g.
-        _([1,3,2,3]).last_index(3)._
-        => 3
-        """
-        return _(self.size()._ - 1 - self.reverse().index(item)._)
-    last_index_of = last_index
-
-    def sorted_index(self, item):
-        """
-        Uses a binary search to determine the index at which the value should be
-        inserted into the list in order to maintain the list's sorted order
-        the return index will be as large as possible. see the examples.
-        @param  : a
-        @return : _(int)
-
-        e.g.
-        _([1,2,3,4,5,6]).sorted_index(4)._
-        => 4
-
-        _([1,2,3,4,4,4,5,6]).sorted_index(4)._
-        => 6
-        """
-        return _(helper._sorted_index(self._, item))
-
     def pairs(self):
         """
         list of lists containing two items.
@@ -331,18 +243,6 @@ class _Underscore(object):
         => [("a", 1), ("b", 2)]
         """
         return self.items() if self.is_a(dict) else self.chunks(2)
-
-    def chunks(self, n):
-        """
-        divide the self._ into n-size list
-        @param  : int
-        @return : _([[a]])
-
-        e.g.
-        _([1,2,3,4]).chunks(3)._
-        => [[1,2,3], [4]]
-        """
-        return _([self._[i:i+n] for i in range(0, self.size()._, n)])
 
     def is_a(self, t):
         """
