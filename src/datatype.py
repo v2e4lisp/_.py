@@ -4,154 +4,8 @@ import random
 import math
 from functools import reduce
 
-class Number_(_Underscore):
-    # number object bought from ruby
-    def times(self, fn):
-        """
-        call fn self._ times
-        @param  : function()
-        @return : _(number)
 
-        e.g.
-        def p(): print('s')
-        _(3).times(p)
-        => s
-        => s
-        => s
-        """
-        for i in range(0, self._):
-            fn()
-        return self
-
-    def ceil(self):
-        """
-        math.ceil
-        @param  : none
-        @return : _(float)
-
-        e.g.
-        _(1.2).ceil()._
-        => 2.0
-        """
-        return _(math.ceil(self._))
-
-    def floor(self):
-        """
-        math.floor
-        @param  : none
-        @return : _(float)
-
-        e.g.
-        _(1.2).floor()._
-        => 1.0
-        """
-        return _(math.floor(self._))
-
-    def chr(self):
-        """
-        builtin chr
-        @param  : none
-        @return : _(str)
-
-        e.g.
-        _(65).chr()._
-        'A'
-        """
-        return _(chr(self._))
-
-    def even(self):
-        """
-        check if the number is even
-        @param  : none
-        @return : bool
-
-        e.g.
-        _(2).even()
-        => True
-        """
-        return self._ % 2 == 0
-
-    def odd(self):
-        """
-        check if the number is odd.
-        @param  : none
-        @return : bool
-
-        e.g.
-        _(2).odd()
-        => False
-        """
-        return not self.even()
-
-    def succ(self):
-        """
-        @param  : none
-        @return : _(int)
-
-        e.g.
-        _(2).succ()._
-        => 3
-        """
-        return _(self._ + 1)
-
-    def pred(self):
-        """
-        @param  : none
-        @return : _(int)
-
-        e.g.
-        _(2).pred()._
-        => 1
-        """
-        return _(self._ - 1)
-
-    def int(self):
-        """
-        convert to integer
-        @param  : none
-        @return : _(int)
-
-        e.g.
-        _(2.3).int()._
-        2
-        """
-        return _(int(self._))
-
-    def up_to(self, n, l):
-        """
-        iterate from `self._` to `n` pass the number to function `fn`.
-        @param  : int
-        @param  : function(int)
-        @return : _(int)
-
-        e.g.
-        result = []
-        _(5).down_to(1, lambda x: result.append(x))
-        print result
-        => [5,4,3,2]
-        """
-        for i in range(self._, n):
-            l(i)
-        return self
-
-    def down_to(self, n, fn):
-        """
-        iterate from `self._` to `n` pass the number to function `fn`.
-        @param  : int
-        @param  : function(int)
-        @return : _(int)
-
-        e.g.
-        result = []
-        _(5).down_to(1, lambda x: result.append(x))
-        print result
-        => [5,4,3,2]
-        """
-        for i in range(self._, n, -1):
-            fn(i)
-        return self
-
-class Iterable_(object):
+class Iterable_(_Underscore):
     def __contains__(self, item):
         ''' in operator '''
         return item in self._
@@ -296,8 +150,6 @@ class Iterable_(object):
         _({'a': 1,'b': 2, 'c': 3}).contains({'a':1, 'c':3})
         => True
         """
-        if isinstance(item, dict):
-            return _(item).all(lambda key: self._.get(key) == item[key])
         return item in self
 
     def invoke(self, method, *args, **kwargs):
@@ -463,17 +315,35 @@ class Iterable_(object):
         """
         return _(zip(self._, *lists))
 
-class _Subscriptable(object):
-    def __getitem__(self, key):
-        return self._[key]
+    def pluck(self, key):
+        """
+        extracting a list of property values from self._ which is a list of dict
+        @param  : a
+        @return : _([])
 
-    def __setitem__(self, key, value):
-        self._[key] = value
-        return self
+        e.g.
+        _([{"a": 1, "b": 2}, {"a": 3, "c": 4}]).pluck("a")._
+        => [1,3]
+        """
+        return self.map(lambda x: x[key])
+
+    def join(self, sep=''):
+        """
+        concat a list of strings by sep which is string,
+        and if sep is a list of string then concat the sep by self._
+        @param  : [str] || str
+        @return : _(str)
+
+        e.g.
+        _(['a', 'b']).join('/')._
+        => 'a/b'
+
+        _('/').join(['a', 'b'])._
+        => 'a/b'
+        """
+        return _(sep.join(self._))
 
 class _Indexable(Iterable_):
-
-
     def first(self):
         """
         get the first value . the same as self._[0]
@@ -567,9 +437,127 @@ class _Indexable(Iterable_):
         """
         return _([self._[i:i+n] for i in range(0, self.size()._, n)])
 
-class Set_(_Underscore, Iterable_): pass
+    def union(self, *lists):
+        """
+        merge `*lists` if there is any. and delete duplicated items.
+        if self._ is a set, then the return _ object holds a set.
+        @param  : *lists
+        @return : _
 
-class List_(_Underscore, _Subscriptable, _Indexable, Iterable_):
+        e.g.
+        _([1,2,2,3]).union()._
+        => [1,2,3]
+
+        _([1,2,2,3]).union([2,3,4], [4,5])._
+        => [1,5]
+
+        # set
+        _({1,2,3,4}).union([1,2,6])._
+        => set([1,2,3,4,6])
+        """
+        return _(helper._union(self._, *lists))
+
+    def intersection(self, *lists):
+        """
+        self._ and lists intersection.
+        if self._ is a set, then the return _ object holds a set.
+        @param  : *lists
+        @return : _
+
+        e.g.
+        _([1,2,2,3]).intersection([2,3,4], [2,5])._
+        => [2]
+
+        # set
+        _({1,2,3,4}).intersection([1,2,6])._
+        => set([1,2])
+        """
+        return _(helper._intersection(self._, *lists))
+
+    def uniq(self):
+        """
+        no duplicated items.
+        @param  : none
+        @return : _
+
+        e.g.
+        _([1,2,3,2]).uniq()._
+        => [1,2,3]
+        """
+        return _(helper._uniq(self._))
+
+    def difference(self, *lists):
+        """
+        items in self._ but not present in lists
+        if self._ is a set, then the return _ object holds a set.
+        `diff` is its alias.
+        @param  : *lists
+        @return : _
+
+        e.g.
+        _([1,2,2,3]).differece([2,3,4], [2,5])._
+        => [1]
+
+        # set
+        _({1,2,3,4}).difference([1,2,6])._
+        => set([3,4])
+        """
+        return _(helper._difference(self._, *lists))
+    diff = difference
+
+    def dict_values(self, values):
+        """
+        make a `dict` with `values` as value and `self._` as key
+        @param  : a
+        @return : _(dict)
+
+        e.g.
+        _(['a', 'k']).dict_values((1,2))._
+        => {'a': 1, 'k': 2}
+        """
+        return _(helper._dict(self._, values))
+
+    def dict_keys(self, keys):
+        """
+        make a `dict` with keys as key and self._ as value
+        @param  : a
+        @return : _(dict)
+
+        e.g.
+        _([1,2,3]).dict_keys(['a', 'b', 'c'])._
+        => {'a': 1, 'b': 2, 'c': 3}
+        """
+        return _(helper._dict(keys, self._))
+
+    def pairs(self):
+        """
+        list of lists containing two items.
+        if self._ is dict then it will be key-value tuple.
+        @param  : none
+        @return : _([(a,b)])
+
+        e.g.
+        _([1,2,3,4,5]).pairs()._
+        => [[1,2], [3,4], [5]]
+
+        _({"a": 1, "b": 2}).pairs()._
+        => [("a", 1), ("b", 2)]
+        """
+        return self.chunks(2)
+
+
+class _Subscriptable(_Indexable):
+    def __getitem__(self, key):
+        return self._[key]
+
+    def __setitem__(self, key, value):
+        self._[key] = value
+        return self
+
+class Set_(Iterable_):
+    pass
+
+class List_(_Subscriptable):
     def shuffle(self):
         """
         @param  : `none`
@@ -600,10 +588,14 @@ class List_(_Underscore, _Subscriptable, _Indexable, Iterable_):
         return _(helper._flatten(self._, deep))
 
 
-class Tuple_(_Underscore, _Subscriptable, _Indexable, Iterable_): pass
+class Tuple_(_Subscriptable): pass
 
 
-class Dict_(_Underscore, _Subscriptable, Iterable_):
+class Dict_(_Subscriptable):
+    def contains(self, item):
+        return _(item).all(lambda key: self._.get(key) == item[key])
+    includes = contains
+
     def pick_if(self, fn):
         """
         """
@@ -666,9 +658,163 @@ class Dict_(_Underscore, _Subscriptable, Iterable_):
             self._.setdefault(i, kwargs[i])
         return self
 
-class Str_(_Underscore, _Subscriptable, _Indexable, Iterable_):
+    def pairs(self):
+        return self.items()
+
+
+class Str_(_Subscriptable):
     def levenshtein(self, s):
         return _(helper._levenshtein(self._, s))
-        ld = levenshtein
+    ld = levenshtein
+
+    def join(self, items):
+        return _(self._.join(map(str, items)))
+
+class Number_(_Underscore):
+    # number object bought from ruby
+    def times(self, fn):
+        """
+        call fn self._ times
+        @param  : function()
+        @return : _(number)
+
+        e.g.
+        def p(): print('s')
+        _(3).times(p)
+        => s
+        => s
+        => s
+        """
+        for i in range(0, self._):
+            fn()
+        return self
+
+    def ceil(self):
+        """
+        math.ceil
+        @param  : none
+        @return : _(float)
+
+        e.g.
+        _(1.2).ceil()._
+        => 2.0
+        """
+        return _(math.ceil(self._))
+
+    def floor(self):
+        """
+        math.floor
+        @param  : none
+        @return : _(float)
+
+        e.g.
+        _(1.2).floor()._
+        => 1.0
+        """
+        return _(math.floor(self._))
+
+    def chr(self):
+        """
+        builtin chr
+        @param  : none
+        @return : _(str)
+
+        e.g.
+        _(65).chr()._
+        'A'
+        """
+        return _(chr(self._))
+
+    def even(self):
+        """
+        check if the number is even
+        @param  : none
+        @return : bool
+
+        e.g.
+        _(2).even()
+        => True
+        """
+        return self._ % 2 == 0
+
+    def odd(self):
+        """
+        check if the number is odd.
+        @param  : none
+        @return : bool
+
+        e.g.
+        _(2).odd()
+        => False
+        """
+        return not self.even()
+
+    def succ(self):
+        """
+        @param  : none
+        @return : _(int)
+
+        e.g.
+        _(2).succ()._
+        => 3
+        """
+        return _(self._ + 1)
+
+    def pred(self):
+        """
+        @param  : none
+        @return : _(int)
+
+        e.g.
+        _(2).pred()._
+        => 1
+        """
+        return _(self._ - 1)
+
+    def int(self):
+        """
+        convert to integer
+        @param  : none
+        @return : _(int)
+
+        e.g.
+        _(2.3).int()._
+        2
+        """
+        return _(int(self._))
+
+    def up_to(self, n, l):
+        """
+        iterate from `self._` to `n` pass the number to function `fn`.
+        @param  : int
+        @param  : function(int)
+        @return : _(int)
+
+        e.g.
+        result = []
+        _(5).down_to(1, lambda x: result.append(x))
+        print result
+        => [5,4,3,2]
+        """
+        for i in range(self._, n):
+            l(i)
+        return self
+
+    def down_to(self, n, fn):
+        """
+        iterate from `self._` to `n` pass the number to function `fn`.
+        @param  : int
+        @param  : function(int)
+        @return : _(int)
+
+        e.g.
+        result = []
+        _(5).down_to(1, lambda x: result.append(x))
+        print result
+        => [5,4,3,2]
+        """
+        for i in range(self._, n, -1):
+            fn(i)
+        return self
 
 class Nonsense_(_Underscore): pass
