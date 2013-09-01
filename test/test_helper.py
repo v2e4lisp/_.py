@@ -3,7 +3,7 @@ import sys
 from types import FunctionType as function
 
 def import_():
-    sys.path.append("/Users/wenjunyan/_py/src")
+    sys.path.append("/Users/wenjunyan/_.py/src")
     sys.path.append("/Users/wenjun.yan/tmp/_.py/src")
     from underscore import _
     return _
