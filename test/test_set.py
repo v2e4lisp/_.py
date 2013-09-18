@@ -59,10 +59,6 @@ class TestUnderscoreSet(unittest.TestCase):
         self.assertTrue(self.s.some(lambda x: x > 4))
         self.assertFalse(self.s.some(lambda x: x > 10))
 
-    def test_invoke(self):
-        r = _({"s", "b", "c"})
-        self.assertTrue(_(r).invoke("upper")._, {"S", "B", "C"})
-
     def test_max(self):
         self.assertEqual(self.s.max()._, 5)
         self.assertEqual(self.s.max(lambda x:  -x)._, 1)

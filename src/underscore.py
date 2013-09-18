@@ -241,6 +241,7 @@ class _(object):
         for i in self._:
             if func(i):
                 return True
+        return False
     any = some
 
     def contains(self, item):
@@ -258,21 +259,6 @@ class _(object):
         if isinstance(item, dict):
             return _(item).all(lambda key: self._.get(key) == item[key])
         return item in self
-
-    def invoke(self, method, *args, **kwargs):
-        """
-        invoke method with args on every item
-        @param  : `function`
-        @param  : `*args`
-        @param  : `**kwargs`
-        @return : `_`
-
-        e.g.
-        _([1,2,3], [3,4,5]).invoke("append", 'hello')._
-        => [[1,2,3,"hello"], [1,2,3,"hello"]]
-        """
-        self.each(lambda x: getattr(x, method)(*args, **kwargs))
-        return self
 
     def max(self, fn=lambda x: x):
         """
