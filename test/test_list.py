@@ -24,10 +24,10 @@ class TestUnderscoreList(unittest.TestCase):
     def test_new(self):
         fake = copy.deepcopy(self.sample)
         the(fake.value()).should.equal(self.sample.value())
-        the(fake).should.nt.equal(self.sample)
+        the(fake).should.NOT.equal(self.sample)
 
     def test_value(self):
-        the(self.sample.value).when.apply().should.Return(list(range(10)))
+        the(self.sample.value).when.apply().should.have.result(list(range(10)))
 
     def test_each(self):
         r = []
@@ -81,8 +81,8 @@ class TestUnderscoreList(unittest.TestCase):
         the(self.sample.some(lambda x: x > 10)).should.be.false
 
     def test_contains(self):
-        the(self.sample.contains).when.apply(2).should.Return(True)
-        the(self.sample.contains).when.apply(121).should.Return(False)
+        the(self.sample.contains).when.apply(2).should.have.result(True)
+        the(self.sample.contains).when.apply(121).should.have.result(False)
 
     def test_pluck(self):
         the(self.sample2.pluck("b").list().value()).should.be.equal([2,2])
@@ -92,8 +92,8 @@ class TestUnderscoreList(unittest.TestCase):
         the(self.sample.max(lambda x: -x)._).should.be.equal(0)
 
     def test_min(self):
-        the(self.sample.min()._).Is(0)
-        the(self.sample.min(lambda x: -x)._).Is(9)
+        the(self.sample.min()._).should.be(0)
+        the(self.sample.min(lambda x: -x)._).should.be(9)
 
     def test_reverse(self):
         the(self.sample.reverse().value()).should.equal(list(range(9, -1, -1)))
